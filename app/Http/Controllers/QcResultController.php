@@ -24,7 +24,7 @@ class QcResultController extends Controller
     public function index(): Response
     {
         return Inertia::render('QC/Index', [
-            'qcResults' => QcResult::with('milkBatch.supplier')
+            'qcResults' => QcResult::with('milkBatch.supplier', 'productionBatch')
                 ->orderBy('created_at', 'desc')
                 ->paginate(20),
         ]);
