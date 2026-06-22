@@ -9,12 +9,10 @@ WORKDIR /app
 COPY composer.json composer.lock ./
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
-COPY package.json package-lock.json ./
+COPY . .
 RUN npm ci && npm run build
 
-COPY . .
-RUN cp .env.example .env && php artisan key:generate
-RUN php artisan storage:link || true
+RUN cp .env.example .env && php artisan key:generate && php artisan storage:link || true
 
 FROM php:8.2-cli-alpine
 
