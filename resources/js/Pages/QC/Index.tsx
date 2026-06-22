@@ -19,19 +19,14 @@ interface QcResult {
     taste: string | null;
     texture: string | null;
     temperature: number | null;
-    peroxide: string | null;
     result: string;
 }
 
 interface Props {
-    qcType: 'raw' | 'pasteurized';
     qcResults: { data: QcResult[] };
 }
 
-export default function QcIndex({ qcType, qcResults }: Props) {
-    const isProduk = qcType === 'pasteurized';
-    const title = isProduk ? 'QC Produk' : 'QC Mentah';
-
+export default function QcIndex({ qcResults }: Props) {
     const columns: ColumnDef<QcResult>[] = [
         {
             accessorKey: 'milk_batch.batch_number',
@@ -42,63 +37,19 @@ export default function QcIndex({ qcType, qcResults }: Props) {
                 return <span className="font-mono text-[#2563EB]">{mb || pb || '-'}</span>;
             },
         },
-        ...(isProduk
-            ? [
-                {
-                    accessorKey: 'production_batch.production_type',
-                    header: 'Produk',
-                    cell: ({ row }: any) => {
-                        const type = row.original.production_batch?.production_type || '-';
-                        return <span className="capitalize">{type}</span>;
-                    },
-                } as ColumnDef<QcResult>,
-            ]
-            : [
-                {
-                    accessorKey: 'milk_batch.supplier.name',
-                    header: 'Supplier',
-                    cell: ({ row }: any) => row.original.milk_batch?.supplier?.name || '-',
-                } as ColumnDef<QcResult>,
-                {
-                    accessorKey: 'total_solids',
-                    header: 'TS',
-                    cell: ({ row }: any) => (row.getValue('total_solids') ?? '-'),
-                } as ColumnDef<QcResult>,
-                {
-                    accessorKey: 'fat',
-                    header: 'Fat',
-                    cell: ({ row }: any) => (row.getValue('fat') ?? '-'),
-                } as ColumnDef<QcResult>,
-                {
-                    accessorKey: 'protein',
-                    header: 'Protein',
-                    cell: ({ row }: any) => (row.getValue('protein') ?? '-'),
-                } as ColumnDef<QcResult>,
-            ]),
+        {
+            accessorKey: 'qc_type',
+            header: 'Tipe',
+            cell: ({ row }) => {
+                const type = row.getValue('qc_type') as string;
+                return <span>{type === 'pasteurized' ? 'Pasteurisasi' : 'Mentah'}</span>;
+            },
+        },
         {
             accessorKey: 'ph',
             header: 'pH',
             cell: ({ row }) => row.getValue('ph') ?? '-',
         },
-        ...(isProduk
-            ? [
-                {
-                    accessorKey: 'aroma',
-                    header: 'Aroma',
-                    cell: ({ row }: any) => row.getValue('aroma') ?? '-',
-                } as ColumnDef<QcResult>,
-                {
-                    accessorKey: 'taste',
-                    header: 'Rasa',
-                    cell: ({ row }: any) => row.getValue('taste') ?? '-',
-                } as ColumnDef<QcResult>,
-                {
-                    accessorKey: 'texture',
-                    header: 'Tekstur',
-                    cell: ({ row }: any) => row.getValue('texture') ?? '-',
-                } as ColumnDef<QcResult>,
-            ]
-            : []),
         {
             accessorKey: 'result',
             header: 'Hasil',
@@ -108,17 +59,15 @@ export default function QcIndex({ qcType, qcResults }: Props) {
 
     return (
         <AuthenticatedLayout>
-            <Head title={title} />
+            <Head title="Quality Control" />
             <div className="space-y-6">
                 <div className="flex items-center justify-between">
-                    <h1 className="text-2xl font-bold text-white">{title}</h1>
-                    {!isProduk && (
-                        <Link href="/qc/create">
-                            <Button className="bg-[#2563EB] hover:bg-[#2563EB]/90">
-                                <Plus className="mr-2 h-4 w-4" /> Input QC Mentah
-                            </Button>
-                        </Link>
-                    )}
+                    <h1 className="text-2xl font-bold text-white">Quality Control</h1>
+                    <Link href="/qc/create">
+                        <Button className="bg-[#2563EB] hover:bg-[#2563EB]/90">
+                            <Plus className="mr-2 h-4 w-4" /> Input QC
+                        </Button>
+                    </Link>
                 </div>
 
                 <DataTable columns={columns} data={qcResults.data} searchColumn="id" searchPlaceholder="Cari..." />

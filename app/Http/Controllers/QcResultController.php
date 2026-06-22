@@ -24,20 +24,7 @@ class QcResultController extends Controller
     public function index(): Response
     {
         return Inertia::render('QC/Index', [
-            'qcType' => 'raw',
             'qcResults' => QcResult::with('milkBatch.supplier', 'productionBatch')
-                ->where('qc_type', 'raw')
-                ->orderBy('created_at', 'desc')
-                ->paginate(20),
-        ]);
-    }
-
-    public function produk(): Response
-    {
-        return Inertia::render('QC/Index', [
-            'qcType' => 'pasteurized',
-            'qcResults' => QcResult::with('milkBatch.supplier', 'productionBatch')
-                ->where('qc_type', 'pasteurized')
                 ->orderBy('created_at', 'desc')
                 ->paginate(20),
         ]);
@@ -55,6 +42,8 @@ class QcResultController extends Controller
                 ->where('status', 'pending_qc')
                 ->orderBy('received_date', 'desc')
                 ->get(['id', 'batch_number', 'supplier_id', 'volume_liter', 'received_date']),
+            'productionBatches' => \App\Models\ProductionBatch::orderBy('created_at', 'desc')
+                ->get(['id', 'batch_number', 'production_type']),
             'selectedMilkBatch' => $milkBatch,
         ]);
     }
@@ -69,17 +58,21 @@ class QcResultController extends Controller
 
         $qcResult = QcResult::create($validated);
 
+        $batchNumber = 'Unknown';
         if ($validated['qc_type'] === 'raw') {
             $milkBatch = MilkBatch::find($validated['milk_batch_id']);
-            $milkBatch->update([
-                'status' => $evaluation['result'] === 'reject' ? 'rejected' : 'approved',
-            ]);
+            if ($milkBatch) {
+                $batchNumber = $milkBatch->batch_number;
+                $milkBatch->update([
+                    'status' => $evaluation['result'] === 'reject' ? 'rejected' : 'approved',
+                ]);
+            }
         }
 
         if ($evaluation['result'] === 'reject') {
             $this->notificationService->create(
                 type: 'qc_warning',
-                title: 'QC Failed: ' . ($milkBatch->batch_number ?? 'Unknown'),
+                title: 'QC Failed: ' . $batchNumber,
                 message: 'Batch ditolak karena ' . implode(', ', $evaluation['warnings'] ?? ['QC gagal']),
                 notifiableType: 'App\Models\User',
                 notifiableId: 1,
@@ -88,10 +81,6 @@ class QcResultController extends Controller
         }
 
         $this->auditService->log('qc_created', 'qc_results', $qcResult->id, null, $validated);
-
-        if ($validated['production_batch_id'] ?? null) {
-            return redirect()->route('production.show', $validated['production_batch_id'])->with('success', 'QC produk berhasil disimpan.');
-        }
 
         return redirect()->route('qc.index')->with('success', 'Hasil QC berhasil disimpan.');
     }

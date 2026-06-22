@@ -69,7 +69,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::prefix('qc')->group(function () {
         Route::get('/', [QcResultController::class, 'index'])->name('qc.index');
-        Route::get('/produk', [QcResultController::class, 'produk'])->name('qc.produk');
         Route::get('/create', [QcResultController::class, 'create'])->name('qc.create');
         Route::post('/', [QcResultController::class, 'store'])->name('qc.store');
     });

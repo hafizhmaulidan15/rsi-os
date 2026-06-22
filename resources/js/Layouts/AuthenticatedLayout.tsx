@@ -34,7 +34,6 @@ export default function AuthenticatedLayout({ children }: PropsWithChildren) {
 
     const menuPaths: Record<string, string[]> = {
         'Milk Intake': ['/milk-intake'],
-        QC: ['/qc'],
         Production: ['/production'],
         Inventory: ['/inventory'],
         Analytics: ['/analytics'],
@@ -70,15 +69,7 @@ export default function AuthenticatedLayout({ children }: PropsWithChildren) {
                 { label: 'Penerimaan', href: '/milk-intake' },
             ],
         },
-        {
-            label: 'QC',
-            icon: <FlaskConical size={20} />,
-            active: isActive('/qc'),
-            children: [
-                { label: 'QC Mentah', href: '/qc' },
-                { label: 'QC Produk', href: '/qc/produk' },
-            ],
-        },
+        { label: 'QC', href: '/qc', icon: <FlaskConical size={20} />, active: isActive('/qc') },
         {
             label: 'Production',
             icon: <Factory size={20} />,
