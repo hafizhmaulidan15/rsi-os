@@ -24,7 +24,20 @@ class QcResultController extends Controller
     public function index(): Response
     {
         return Inertia::render('QC/Index', [
+            'qcType' => 'raw',
             'qcResults' => QcResult::with('milkBatch.supplier', 'productionBatch')
+                ->where('qc_type', 'raw')
+                ->orderBy('created_at', 'desc')
+                ->paginate(20),
+        ]);
+    }
+
+    public function produk(): Response
+    {
+        return Inertia::render('QC/Index', [
+            'qcType' => 'pasteurized',
+            'qcResults' => QcResult::with('milkBatch.supplier', 'productionBatch')
+                ->where('qc_type', 'pasteurized')
                 ->orderBy('created_at', 'desc')
                 ->paginate(20),
         ]);
