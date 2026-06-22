@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: rsi-os
+    runtime: image
+    repo: https://github.com/hafizhmaulidan15/rsi-os
+    branch: main
+    dockerfilePath: ./Dockerfile
+    region: singapore
+    plan: free
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      - key: APP_URL
+        value: https://rsi-os.onrender.com
+      - key: DB_CONNECTION
+        value: sqlite
+      - key: DB_DATABASE
+        value: /var/data/database.sqlite
