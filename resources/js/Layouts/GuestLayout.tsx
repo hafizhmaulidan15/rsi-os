@@ -27,35 +27,11 @@ export default function GuestLayout({ children }: PropsWithChildren) {
                             </div>
                         </div>
 
-                        <div className="mt-8 space-y-3">
-                            <div className="flex items-center gap-3 rounded-lg border border-[#2563EB]/20 bg-[#2563EB]/5 p-4">
-                                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#2563EB]/20">
-                                    <svg className="h-4 w-4 text-[#60A5FA]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-                                </div>
-                                <div>
-                                    <p className="text-sm font-semibold text-white">100% Produk Lokal</p>
-                                    <p className="text-xs text-gray-500">Susu segar dari peternak sapi perah lokal</p>
-                                </div>
-                            </div>
-                            <div className="flex items-center gap-3 rounded-lg border border-[#2563EB]/20 bg-[#2563EB]/5 p-4">
-                                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#2563EB]/20">
-                                    <svg className="h-4 w-4 text-[#60A5FA]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-                                </div>
-                                <div>
-                                    <p className="text-sm font-semibold text-white">Cold Chain System</p>
-                                    <p className="text-xs text-gray-500">Rantai pasok dingin terintegrasi</p>
-                                </div>
-                            </div>
-                            <div className="flex items-center gap-3 rounded-lg border border-[#2563EB]/20 bg-[#2563EB]/5 p-4">
-                                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#2563EB]/20">
-                                    <svg className="h-4 w-4 text-[#60A5FA]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-                                </div>
-                                <div>
-                                    <p className="text-sm font-semibold text-white">BPOM Certified</p>
-                                    <p className="text-xs text-gray-500">Terdaftar & terjamin keamanannya</p>
-                                </div>
-                            </div>
-                        </div>
+                        <p className="mt-8 text-sm leading-relaxed text-gray-400">
+                            Sistem operasional, manajemen, dan monitoring<br />
+                            produksi susu pasteurisasi Rumah Susu Indonesia —<br />
+                            terintegrasi dari hulu ke hilir.
+                        </p>
                     </div>
                 </div>
 
