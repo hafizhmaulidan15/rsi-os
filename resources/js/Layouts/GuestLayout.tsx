@@ -34,17 +34,17 @@ export default function GuestLayout({ children }: PropsWithChildren) {
                             <div className="rounded-lg border border-[#1F2937] bg-[#111827]/50 p-4 md:p-5 text-center">
                                 <i className="fa-solid fa-store text-lg text-[#60A5FA] md:text-xl"></i>
                                 <p className="mt-2 text-sm font-semibold text-white md:text-base">100% Produk Lokal</p>
-                                <p className="mt-1 text-xs text-gray-500 md:text-sm">Peternak lokal</p>
+                                <p className="mt-1 text-xs text-gray-500 md:text-sm">Pemberdayaan peternak sapi perah lokal</p>
                             </div>
                             <div className="rounded-lg border border-[#1F2937] bg-[#111827]/50 p-4 md:p-5 text-center">
                                 <i className="fa-solid fa-snowflake text-lg text-[#60A5FA] md:text-xl"></i>
                                 <p className="mt-2 text-sm font-semibold text-white md:text-base">Cold Chain System</p>
-                                <p className="mt-1 text-xs text-gray-500 md:text-sm">Rantai dingin</p>
+                                <p className="mt-1 text-xs text-gray-500 md:text-sm">Kesegaran terjaga dari kandang ke konsumen</p>
                             </div>
                             <div className="rounded-lg border border-[#1F2937] bg-[#111827]/50 p-4 md:p-5 text-center">
                                 <i className="fa-solid fa-certificate text-lg text-[#60A5FA] md:text-xl"></i>
                                 <p className="mt-2 text-sm font-semibold text-white md:text-base">BPOM Certified</p>
-                                <p className="mt-1 text-xs text-gray-500 md:text-sm">Terjamin</p>
+                                <p className="mt-1 text-xs text-gray-500 md:text-sm">Terdaftar resmi & aman dikonsumsi</p>
                             </div>
                         </div>
                     </div>

@@ -31,9 +31,9 @@ export default function Login({
             <Head title="Masuk" />
 
             <div className="w-full">
-                <div className="mb-6">
-                    <h2 className="text-xl font-semibold text-white">Selamat Datang</h2>
-                    <p className="mt-1 text-sm text-gray-400">
+                <div className="mb-8">
+                    <h2 className="text-2xl font-bold text-white md:text-3xl">Selamat Datang</h2>
+                    <p className="mt-2 text-sm text-gray-400 md:text-base">
                         Masuk untuk mengakses sistem
                     </p>
                 </div>
@@ -44,14 +44,14 @@ export default function Login({
                     </div>
                 )}
 
-                <form onSubmit={submit} className="space-y-4">
+                <form onSubmit={submit} className="space-y-5">
                     <div>
-                        <label htmlFor="email" className="mb-1.5 block text-sm font-medium text-gray-300">
+                        <label htmlFor="email" className="mb-1.5 block text-sm font-medium text-gray-300 md:text-base">
                             Email
                         </label>
                         <div className="relative">
                             <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                                <Mail size={16} className="text-gray-500" />
+                                <Mail size={18} className="text-gray-500" />
                             </div>
                             <input
                                 id="email"
@@ -61,7 +61,7 @@ export default function Login({
                                 autoComplete="username"
                                 autoFocus
                                 onChange={(e) => setData('email', e.target.value)}
-                                className="block w-full rounded-lg border border-[#1F2937] bg-[#111827] py-2.5 pl-10 pr-3 text-sm text-white placeholder-gray-500 transition-colors focus:border-[#2563EB] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                                className="block w-full rounded-lg border border-[#1F2937] bg-[#111827] py-3 pl-10 pr-3 text-sm text-white placeholder-gray-500 transition-colors focus:border-[#2563EB] focus:outline-none focus:ring-1 focus:ring-[#2563EB] md:text-base"
                                 placeholder="nama@email.com"
                             />
                         </div>
@@ -71,12 +71,12 @@ export default function Login({
                     </div>
 
                     <div>
-                        <label htmlFor="password" className="mb-1.5 block text-sm font-medium text-gray-300">
+                        <label htmlFor="password" className="mb-1.5 block text-sm font-medium text-gray-300 md:text-base">
                             Kata Sandi
                         </label>
                         <div className="relative">
                             <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                                <Lock size={16} className="text-gray-500" />
+                                <Lock size={18} className="text-gray-500" />
                             </div>
                             <input
                                 id="password"
@@ -85,7 +85,7 @@ export default function Login({
                                 value={data.password}
                                 autoComplete="current-password"
                                 onChange={(e) => setData('password', e.target.value)}
-                                className="block w-full rounded-lg border border-[#1F2937] bg-[#111827] py-2.5 pl-10 pr-10 text-sm text-white placeholder-gray-500 transition-colors focus:border-[#2563EB] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                                className="block w-full rounded-lg border border-[#1F2937] bg-[#111827] py-3 pl-10 pr-10 text-sm text-white placeholder-gray-500 transition-colors focus:border-[#2563EB] focus:outline-none focus:ring-1 focus:ring-[#2563EB] md:text-base"
                                 placeholder="Masukkan kata sandi"
                             />
                             <button
@@ -93,7 +93,7 @@ export default function Login({
                                 onClick={() => setShowPassword(!showPassword)}
                                 className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 hover:text-gray-300"
                             >
-                                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                             </button>
                         </div>
                         {errors.password && (
@@ -112,13 +112,13 @@ export default function Login({
                                 }
                                 className="h-4 w-4 rounded border-[#1F2937] bg-[#111827] text-[#2563EB] focus:ring-[#2563EB]"
                             />
-                            <span className="text-sm text-gray-400">Ingat saya</span>
+                            <span className="text-sm text-gray-400 md:text-base">Ingat saya</span>
                         </label>
 
                         {canResetPassword && (
                             <a
                                 href={route('password.request')}
-                                className="text-sm text-[#60A5FA] transition-colors hover:text-[#3B82F6]"
+                                className="text-sm text-[#60A5FA] transition-colors hover:text-[#3B82F6] md:text-base"
                             >
                                 Lupa password?
                             </a>
@@ -128,9 +128,9 @@ export default function Login({
                     <button
                         type="submit"
                         disabled={processing}
-                        className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#2563EB] px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-[#1D4ED8] disabled:cursor-not-allowed disabled:opacity-50"
+                        className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#2563EB] px-4 py-3 text-sm font-semibold text-white transition-all hover:bg-[#1D4ED8] disabled:cursor-not-allowed disabled:opacity-50 md:text-base"
                     >
-                        {processing && <Loader2 size={16} className="animate-spin" />}
+                        {processing && <Loader2 size={18} className="animate-spin" />}
                         {processing ? 'Memproses...' : 'Masuk'}
                     </button>
                 </form>
