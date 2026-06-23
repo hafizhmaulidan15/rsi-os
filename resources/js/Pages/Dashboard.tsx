@@ -2,7 +2,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link } from '@inertiajs/react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/Components/ui/card';
 import { Badge } from '@/Components/ui/badge';
-import { Milk, Factory, FlaskConical, Package, AlertTriangle, Clock, Server } from 'lucide-react';
+import { Milk, Factory, FlaskConical, Package, AlertTriangle, Clock, Server, TrendingDown } from 'lucide-react';
 
 interface PageProps {
     activeBatches: any[];
@@ -44,7 +44,7 @@ export default function Dashboard({
                     </span>
                 </div>
 
-                <div className="grid gap-4 md:grid-cols-4">
+                <div className="grid gap-4 md:grid-cols-5">
                     <Card className="border-[#1F2937] bg-[#111827]">
                         <CardHeader className="flex flex-row items-center justify-between pb-2">
                             <CardTitle className="text-sm font-medium text-gray-400">Batch Aktif</CardTitle>
@@ -81,6 +81,17 @@ export default function Dashboard({
                             <div className="text-2xl font-bold text-white">{shelfLifeAlerts.length}</div>
                         </CardContent>
                     </Card>
+                    <Card className="border-[#1F2937] bg-[#111827]">
+                        <CardHeader className="flex flex-row items-center justify-between pb-2">
+                            <CardTitle className="text-sm font-medium text-gray-400">Stok Rendah / Habis</CardTitle>
+                            <TrendingDown className="h-4 w-4 text-[#DC2626]" />
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold text-white">
+                                {inventorySummary.filter((i: any) => i.health === 'low' || i.health === 'out_of_stock').length}
+                            </div>
+                        </CardContent>
+                    </Card>
                 </div>
 
                 <div className="grid gap-6 md:grid-cols-2">
@@ -96,8 +107,8 @@ export default function Dashboard({
                                     {latestQc.map((qc: any) => (
                                         <div key={qc.id} className="flex items-center justify-between border-b border-[#1F2937] pb-2 last:border-0">
                                             <div>
-                                                <p className="text-sm font-medium text-white">{qc.milk_batch?.supplier?.name}</p>
-                                                <p className="text-xs text-gray-500">TS: {qc.total_solids} | Fat: {qc.fat} | Protein: {qc.protein}</p>
+                                                <p className="text-sm font-medium text-white">{qc.milk_batch?.supplier?.name || qc.production_batch?.batch_number || '-'}</p>
+                                                <p className="text-xs text-gray-500">{qc.qc_type === 'pasteurized' ? 'Pasteurisasi' : 'Mentah'} | TS: {qc.total_solids ?? '-'} | Fat: {qc.fat ?? '-'}</p>
                                             </div>
                                             <Badge variant={qc.result === 'pass' ? 'success' : 'danger'}>
                                                 {qc.result.toUpperCase()}
@@ -118,17 +129,24 @@ export default function Dashboard({
                                 <p className="text-sm text-gray-500">Belum ada data inventory</p>
                             ) : (
                                 <div className="space-y-2">
-                                    {inventorySummary.map((item: any) => (
-                                        <div key={item.id} className="flex items-center justify-between">
-                                            <span className="text-sm text-gray-400">{item.name}</span>
-                                            <div className="flex items-center gap-2">
-                                                <span className="text-sm text-white">{item.stock} {item.unit}</span>
-                                                <Badge variant={item.status === 'ok' ? 'success' : item.status === 'low' ? 'warning' : 'danger'}>
-                                                    {item.status === 'ok' ? 'OK' : item.status === 'low' ? 'Low' : 'Habis'}
-                                                </Badge>
+                                    {inventorySummary.map((item: any) => {
+                                        const ratio = item.minimum_stock > 0 ? Math.min(item.stock / item.minimum_stock, 2) / 2 : 0;
+                                        const healthColor = item.health === 'ok' ? 'bg-[#16A34A]' : item.health === 'medium' ? 'bg-[#D97706]' : item.health === 'low' ? 'bg-[#DC2626]' : 'bg-[#6B7280]';
+                                        const healthLabel = item.health === 'ok' ? 'Aman' : item.health === 'medium' ? 'Cukup' : item.health === 'low' ? 'Rendah' : 'Habis';
+                                        const healthVariant = item.health === 'ok' ? 'success' as const : item.health === 'medium' ? 'warning' as const : 'danger' as const;
+                                        return (
+                                            <div key={item.id} className="flex items-center justify-between">
+                                                <span className="text-sm text-gray-400">{item.name}</span>
+                                                <div className="flex items-center gap-2">
+                                                    <span className="text-sm text-gray-500">{item.stock} {item.unit}</span>
+                                                    <div className="w-16 h-1.5 rounded-full bg-[#1F2937] overflow-hidden">
+                                                        <div className={`h-full rounded-full ${healthColor}`} style={{ width: `${Math.min(ratio * 100, 100)}%` }} />
+                                                    </div>
+                                                    <Badge variant={healthVariant}>{healthLabel}</Badge>
+                                                </div>
                                             </div>
-                                        </div>
-                                    ))}
+                                        );
+                                    })}
                                 </div>
                             )}
                         </CardContent>

@@ -4,7 +4,7 @@ import { Button } from '@/Components/ui/button';
 import { Badge } from '@/Components/ui/badge';
 import { DataTable } from '@/Components/ui/data-table';
 import { ColumnDef } from '@tanstack/react-table';
-import { Plus } from 'lucide-react';
+import { Plus, FileDown } from 'lucide-react';
 
 interface QcResult {
     id: number;
@@ -63,11 +63,23 @@ export default function QcIndex({ qcResults }: Props) {
             <div className="space-y-6">
                 <div className="flex items-center justify-between">
                     <h1 className="text-2xl font-bold text-white">Quality Control</h1>
-                    <Link href="/qc/create">
-                        <Button className="bg-[#2563EB] hover:bg-[#2563EB]/90">
-                            <Plus className="mr-2 h-4 w-4" /> Input QC
-                        </Button>
-                    </Link>
+                    <div className="flex gap-2">
+                        <a href="/export/csv/qc" target="_blank">
+                            <Button variant="outline" className="border-[#1F2937] text-gray-300">
+                                <FileDown className="mr-2 h-4 w-4" /> CSV
+                            </Button>
+                        </a>
+                        <a href="/export/pdf/qc" target="_blank">
+                            <Button variant="outline" className="border-[#1F2937] text-gray-300">
+                                <FileDown className="mr-2 h-4 w-4" /> PDF
+                            </Button>
+                        </a>
+                        <Link href="/qc/create">
+                            <Button className="bg-[#2563EB] hover:bg-[#2563EB]/90">
+                                <Plus className="mr-2 h-4 w-4" /> Input QC
+                            </Button>
+                        </Link>
+                    </div>
                 </div>
 
                 <DataTable columns={columns} data={qcResults.data} searchColumn="id" searchPlaceholder="Cari..." />

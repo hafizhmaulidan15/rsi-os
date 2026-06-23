@@ -11,6 +11,7 @@ use App\Http\Controllers\ShelfLifeController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ExportController;
+use App\Http\Controllers\PurchaseOrderController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -80,6 +81,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('settings')->group(function () {
         Route::get('/', [SettingController::class, 'index'])->name('settings.index');
         Route::match(['post', 'put'], '/', [SettingController::class, 'update'])->name('settings.update');
+    });
+
+    Route::prefix('purchase-order')->group(function () {
+        Route::get('/', [PurchaseOrderController::class, 'index'])->name('purchase-order.index');
+        Route::post('/save', [PurchaseOrderController::class, 'save'])->name('purchase-order.save');
+        Route::post('/clear', [PurchaseOrderController::class, 'clear'])->name('purchase-order.clear');
+        Route::post('/add-item', [PurchaseOrderController::class, 'addItem'])->name('purchase-order.add-item');
     });
 
     Route::prefix('export')->group(function () {

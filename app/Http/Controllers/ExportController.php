@@ -78,12 +78,37 @@ class ExportController extends Controller
         $data = [];
         switch ($type) {
             case 'production':
-                $data['items'] = ProductionBatch::with('milkBatch.supplier')->latest()->get();
-                $data['title'] = 'Production Report';
+                $data['items'] = ProductionBatch::with('milkBatch.supplier')->latest()->get()->map(fn($b) => [
+                    'Batch' => $b->batch_number,
+                    'Tipe' => ucwords(str_replace('_', ' ', $b->production_type)),
+                    'Supplier' => $b->milkBatch?->supplier?->name ?? '-',
+                    'Status' => $b->status,
+                    'Mulai' => $b->start_time,
+                ]);
+                $data['title'] = 'Laporan Produksi';
+                $data['columns'] = ['Batch', 'Tipe', 'Supplier', 'Status', 'Mulai'];
                 break;
             case 'qc':
-                $data['items'] = QcResult::with('milkBatch.supplier')->latest()->get();
-                $data['title'] = 'QC Report';
+                $data['items'] = QcResult::with('milkBatch.supplier', 'productionBatch')
+                    ->latest()
+                    ->get()
+                    ->map(fn($q) => [
+                        'Batch' => $q->milkBatch?->batch_number ?? $q->productionBatch?->batch_number ?? '-',
+                        'Tipe' => $q->qc_type === 'pasteurized' ? 'Pasteurisasi' : 'Mentah',
+                        'Supplier' => $q->milkBatch?->supplier?->name ?? '-',
+                        'pH' => $q->ph ?? '-',
+                        'TS' => $q->total_solids ?? '-',
+                        'Lemak' => $q->fat ?? '-',
+                        'Protein' => $q->protein ?? '-',
+                        'Aroma' => $q->aroma ?? '-',
+                        'Rasa' => $q->taste ?? '-',
+                        'Hasil' => $q->result === 'pass'
+                            ? '<span class="badge badge-pass">LULUS</span>'
+                            : '<span class="badge badge-reject">DITOLAK</span>',
+                        'Tanggal' => $q->created_at?->format('d/m/Y'),
+                    ]);
+                $data['title'] = 'Laporan Quality Control';
+                $data['columns'] = ['Batch', 'Tipe', 'Supplier', 'pH', 'TS', 'Lemak', 'Protein', 'Aroma', 'Rasa', 'Hasil', 'Tanggal'];
                 break;
         }
 

@@ -7,6 +7,7 @@ import {
     FlaskConical,
     Factory,
     Package,
+    ShoppingCart,
     BarChart3,
     Settings,
     ChevronDown,
@@ -35,7 +36,7 @@ export default function AuthenticatedLayout({ children }: PropsWithChildren) {
     const menuPaths: Record<string, string[]> = {
         'Milk Intake': ['/milk-intake'],
         Production: ['/production'],
-        Inventory: ['/inventory'],
+        Inventory: ['/inventory', '/purchase-order'],
         Analytics: ['/analytics'],
     };
 
@@ -90,6 +91,7 @@ export default function AuthenticatedLayout({ children }: PropsWithChildren) {
                 { label: 'Packaging & Items', href: '/inventory?tab=packaging' },
                 { label: 'Transaksi', href: '/inventory/transactions/create' },
                 { label: 'Items', href: '/inventory/items' },
+                { label: 'Purchase Order', href: '/purchase-order' },
             ],
         },
         { label: 'Shelf Life', href: '/shelf-life', icon: <Clock size={20} />, active: isActive('/shelf-life') },

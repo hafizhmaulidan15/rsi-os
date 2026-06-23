@@ -30,6 +30,9 @@ class InventoryController extends Controller
         $products = array_values(array_filter($stock, fn($i) => in_array($i['category'], ['mozzarella', 'susu_cup'])));
         $packaging = array_values(array_filter($stock, fn($i) => $i['category'] === 'packaging'));
 
+        $po = session()->get('purchase_order', []);
+        $poItems = InventoryItem::whereIn('id', array_keys($po))->get()->keyBy('id');
+
         return Inertia::render('Inventory/Index', [
             'tab' => $tab,
             'allStock' => $stock,
@@ -38,6 +41,10 @@ class InventoryController extends Controller
             'transactions' => InventoryTransaction::with('item', 'productionBatch')
                 ->orderBy('created_at', 'desc')
                 ->paginate(20),
+            'purchaseOrder' => collect($po)->map(fn($qty, $id) => [
+                'item' => $poItems[(int)$id] ?? null,
+                'quantity' => $qty,
+            ])->filter(fn($i) => $i['item'] !== null)->values(),
         ]);
     }
 
