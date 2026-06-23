@@ -51,6 +51,8 @@ export const inventoryTransactionSchema = z.object({
     transaction_type: z.enum(['in', 'out', 'adjustment']),
     quantity: z.string().min(1, 'Jumlah wajib diisi'),
     notes: z.string().optional(),
+    request_by: z.string().optional(),
+    no_sj: z.string().optional(),
 });
 
 export type SupplierFormData = z.infer<typeof supplierSchema>;

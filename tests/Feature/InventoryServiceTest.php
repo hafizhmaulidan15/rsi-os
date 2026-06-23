@@ -42,6 +42,6 @@ test('getAllStock returns status out_of_stock when zero', function () {
     $allStock = $service->getAllStock();
 
     $found = collect($allStock)->firstWhere('id', $item->id);
-    expect($found['status'])->toBe('out_of_stock');
+    expect($found['health'])->toBe('out_of_stock');
     expect($found['stock'])->toBe(0.0);
 });

@@ -14,6 +14,8 @@ class InventoryTransaction extends Model
         'quantity',
         'transaction_date',
         'notes',
+        'request_by',
+        'no_sj',
     ];
 
     public function item(): BelongsTo

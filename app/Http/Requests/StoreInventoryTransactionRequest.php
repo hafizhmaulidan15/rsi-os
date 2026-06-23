@@ -15,6 +15,8 @@ class StoreInventoryTransactionRequest extends FormRequest
             'production_batch_id' => 'nullable|exists:production_batches,id',
             'transaction_date' => 'required|date',
             'notes' => 'nullable|string',
+            'request_by' => 'nullable|string|max:100',
+            'no_sj' => 'nullable|string|max:100',
         ];
     }
 }

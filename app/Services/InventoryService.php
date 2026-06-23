@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Models\InventoryItem;
 use App\Models\InventoryTransaction;
-use Illuminate\Support\Facades\DB;
 
 class InventoryService
 {
@@ -12,6 +11,14 @@ class InventoryService
     {
         return (float) InventoryTransaction::where('item_id', $itemId)
             ->sum('quantity');
+    }
+
+    public function getStockHealth(float $stock, float $minimumStock): string
+    {
+        if ($stock <= 0) return 'out_of_stock';
+        if ($stock <= $minimumStock) return 'low';
+        if ($stock <= $minimumStock * 2) return 'medium';
+        return 'ok';
     }
 
     public function getAllStock(): array
@@ -25,9 +32,24 @@ class InventoryService
                 'category' => $item->category,
                 'unit' => $item->unit,
                 'stock' => $stock,
-                'minimum_stock' => $item->minimum_stock,
-                'status' => $stock <= 0 ? 'out_of_stock' : ($stock <= $item->minimum_stock ? 'low' : 'ok'),
+                'minimum_stock' => (float) $item->minimum_stock,
+                'health' => $this->getStockHealth($stock, (float) $item->minimum_stock),
             ];
         })->toArray();
+    }
+
+    public function getTransactionsWithRunningBalance(int $itemId): array
+    {
+        $transactions = InventoryTransaction::where('item_id', $itemId)
+            ->orderBy('transaction_date')
+            ->orderBy('created_at')
+            ->get();
+
+        $balance = 0;
+        return $transactions->map(function ($t) use (&$balance) {
+            $balance += (float) $t->quantity;
+            $t->running_balance = $balance;
+            return $t;
+        })->reverse()->values()->toArray();
     }
 }

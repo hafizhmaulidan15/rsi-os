@@ -4,25 +4,17 @@ import { Button } from '@/Components/ui/button';
 import { Badge } from '@/Components/ui/badge';
 import { DataTable } from '@/Components/ui/data-table';
 import { ColumnDef } from '@tanstack/react-table';
-import { Plus } from 'lucide-react';
+import { Plus, Package, Layers, Box, FlaskConical } from 'lucide-react';
 
-interface Product {
+interface StockItem {
     id: number;
+    item_code: string;
     name: string;
     category: string;
-    stock: number;
     unit: string;
-    minimum_stock: number;
-    status: string;
-}
-
-interface Packaging {
-    id: number;
-    name: string;
     stock: number;
-    unit: string;
     minimum_stock: number;
-    status: string;
+    health: string;
 }
 
 interface Transaction {
@@ -31,30 +23,60 @@ interface Transaction {
     item: { name: string } | null;
     transaction_type: string;
     quantity: number;
+    request_by: string | null;
+    no_sj: string | null;
     production_batch: { batch_number: string } | null;
     notes: string | null;
 }
 
 interface Props {
     tab: string;
-    products: Product[];
-    packaging: Packaging[];
+    allStock: StockItem[];
+    products: StockItem[];
+    packaging: StockItem[];
     transactions: { data: Transaction[] };
 }
 
-const stockBadge = (item: { stock: number; status: string }) => {
-    if (item.stock <= 0) return 'danger' as const;
-    if (item.status === 'low') return 'warning' as const;
-    return 'success' as const;
+const healthVariant = (health: string) => {
+    switch (health) {
+        case 'ok': return 'success' as const;
+        case 'medium': return 'warning' as const;
+        case 'low': return 'danger' as const;
+        case 'out_of_stock': return 'danger' as const;
+        default: return 'default' as const;
+    }
 };
 
-const stockLabel = (item: { stock: number; status: string }) => {
-    if (item.stock <= 0) return 'Out of Stock';
-    if (item.status === 'low') return 'Low';
-    return 'In Stock';
+const healthLabel = (health: string) => {
+    switch (health) {
+        case 'ok': return 'Aman';
+        case 'medium': return 'Cukup';
+        case 'low': return 'Rendah';
+        case 'out_of_stock': return 'Habis';
+        default: return health;
+    }
 };
 
-export default function InventoryIndex({ tab, products, packaging, transactions }: Props) {
+const healthColor = (health: string) => {
+    switch (health) {
+        case 'ok': return 'bg-[#16A34A]';
+        case 'medium': return 'bg-[#D97706]';
+        case 'low': return 'bg-[#DC2626]';
+        case 'out_of_stock': return 'bg-[#6B7280]';
+        default: return 'bg-[#6B7280]';
+    }
+};
+
+const categoryIcon = (cat: string) => {
+    switch (cat) {
+        case 'mozzarella': return <FlaskConical className="h-4 w-4 text-blue-400" />;
+        case 'susu_cup': return <Package className="h-4 w-4 text-[#2563EB]" />;
+        case 'packaging': return <Layers className="h-4 w-4 text-emerald-400" />;
+        default: return <Box className="h-4 w-4 text-purple-400" />;
+    }
+};
+
+export default function InventoryIndex({ tab, allStock, products, packaging, transactions }: Props) {
     const currentTab = tab;
 
     const switchTab = (t: string) => {
@@ -62,41 +84,74 @@ export default function InventoryIndex({ tab, products, packaging, transactions 
     };
 
     const tabs = [
+        { key: 'all', label: 'Semua Stok' },
         { key: 'products', label: 'Produk Jadi' },
-        { key: 'packaging', label: 'Packaging' },
-        { key: 'transactions', label: 'Transactions' },
+        { key: 'packaging', label: 'Packaging & Items' },
+        { key: 'transactions', label: 'Transaksi' },
     ];
 
-    const productColumns: ColumnDef<Product>[] = [
-        { accessorKey: 'name', header: 'Item' },
-        { accessorKey: 'category', header: 'Category', cell: ({ row }) => <span className="capitalize text-gray-400">{row.getValue('category')}</span> },
-        { accessorKey: 'stock', header: 'Stock', cell: ({ row }) => <span className="font-semibold">{row.getValue('stock')} {row.original.unit}</span> },
-        { accessorKey: 'minimum_stock', header: 'Min Stock', cell: ({ row }) => <span className="text-gray-400">{row.getValue('minimum_stock')} {row.original.unit}</span> },
-        { accessorKey: 'status', header: 'Status', cell: ({ row }) => <Badge variant={stockBadge(row.original)}>{stockLabel(row.original)}</Badge> },
+    const stockTable: ColumnDef<StockItem>[] = [
+        {
+            id: 'name',
+            header: 'Item',
+            cell: ({ row }) => (
+                <div className="flex items-center gap-2">
+                    {categoryIcon(row.original.category)}
+                    <div>
+                        <span className="text-white text-sm">{row.original.name}</span>
+                        <span className="text-gray-500 text-xs ml-2 font-mono">{row.original.item_code}</span>
+                    </div>
+                </div>
+            ),
+        },
+        { accessorKey: 'category', header: 'Kategori', cell: ({ row }) => <span className="capitalize text-gray-400 text-xs">{row.original.category === 'susu_cup' ? 'Susu Cup' : row.original.category}</span> },
+        { accessorKey: 'stock', header: 'Stok', cell: ({ row }) => <span className="font-semibold text-white">{row.original.stock.toLocaleString('id-ID')} <span className="text-gray-400 text-xs">{row.original.unit}</span></span> },
+        { accessorKey: 'minimum_stock', header: 'Min', cell: ({ row }) => <span className="text-gray-400 text-xs">{row.original.minimum_stock.toLocaleString('id-ID')} {row.original.unit}</span> },
+        {
+            id: 'health',
+            header: 'Kesehatan Stok',
+            cell: ({ row }) => {
+                const ratio = row.original.minimum_stock > 0 ? Math.min(row.original.stock / row.original.minimum_stock, 2) / 2 : 0;
+                return (
+                    <div className="flex items-center gap-2">
+                        <div className="w-20 h-2 rounded-full bg-[#1F2937] overflow-hidden">
+                            <div
+                                className={`h-full rounded-full transition-all ${healthColor(row.original.health)}`}
+                                style={{ width: `${Math.min(ratio * 100, 100)}%` }}
+                            />
+                        </div>
+                        <Badge variant={healthVariant(row.original.health)} className="text-[10px] px-1.5 py-0">{healthLabel(row.original.health)}</Badge>
+                    </div>
+                );
+            },
+        },
     ];
 
-    const packagingColumns: ColumnDef<Packaging>[] = [
+    const productColumns: ColumnDef<StockItem>[] = [
         { accessorKey: 'name', header: 'Item' },
-        { accessorKey: 'stock', header: 'Stock', cell: ({ row }) => <span className="font-semibold">{row.getValue('stock')} {row.original.unit}</span> },
-        { accessorKey: 'minimum_stock', header: 'Min Stock', cell: ({ row }) => <span className="text-gray-400">{row.getValue('minimum_stock')} {row.original.unit}</span> },
-        { accessorKey: 'status', header: 'Status', cell: ({ row }) => <Badge variant={stockBadge(row.original)}>{stockLabel(row.original)}</Badge> },
+        { accessorKey: 'category', header: 'Kategori', cell: ({ row }) => <span className="capitalize text-gray-400">{row.original.category === 'susu_cup' ? 'Susu Cup' : row.original.category}</span> },
+        { accessorKey: 'stock', header: 'Stok', cell: ({ row }) => <span className="font-semibold">{row.original.stock.toLocaleString('id-ID')} {row.original.unit}</span> },
+        { accessorKey: 'minimum_stock', header: 'Min', cell: ({ row }) => <span className="text-gray-400 text-xs">{row.original.minimum_stock.toLocaleString('id-ID')} {row.original.unit}</span> },
+        { accessorKey: 'health', header: 'Status', cell: ({ row }) => <Badge variant={healthVariant(row.original.health)}>{healthLabel(row.original.health)}</Badge> },
     ];
 
     const transactionColumns: ColumnDef<Transaction>[] = [
-        { accessorKey: 'transaction_date', header: 'Date', cell: ({ row }) => <span className="text-gray-400">{row.getValue('transaction_date')}</span> },
+        { accessorKey: 'transaction_date', header: 'Tanggal', cell: ({ row }) => <span className="text-gray-400 text-xs">{row.getValue('transaction_date')}</span> },
         { accessorKey: 'item.name', header: 'Item', cell: ({ row }) => row.original.item?.name || '-' },
         {
             accessorKey: 'transaction_type',
-            header: 'Type',
+            header: 'Tipe',
             cell: ({ row }) => {
                 const type = row.getValue('transaction_type');
                 const variant = type === 'in' ? 'success' as const : type === 'out' ? 'danger' as const : 'warning' as const;
-                return <Badge variant={variant}>{String(type)}</Badge>;
+                const label = type === 'in' ? 'Masuk' : type === 'out' ? 'Keluar' : 'Adjust';
+                return <Badge variant={variant}>{label}</Badge>;
             },
         },
-        { accessorKey: 'quantity', header: 'Qty', cell: ({ row }) => <span className="font-semibold">{row.getValue('quantity')}</span> },
-        { accessorKey: 'production_batch.batch_number', header: 'Batch', cell: ({ row }) => <span className="text-gray-400">{row.original.production_batch?.batch_number || '-'}</span> },
-        { accessorKey: 'notes', header: 'Notes', cell: ({ row }) => <span className="text-gray-400">{row.getValue('notes') || '-'}</span> },
+        { accessorKey: 'quantity', header: 'Jumlah', cell: ({ row }) => <span className="font-semibold">{Math.abs(row.original.quantity).toLocaleString('id-ID')}</span> },
+        { accessorKey: 'request_by', header: 'Request By', cell: ({ row }) => <span className="text-gray-400 text-xs">{row.original.request_by || '-'}</span> },
+        { accessorKey: 'no_sj', header: 'No. SJ', cell: ({ row }) => <span className="text-gray-400 text-xs font-mono">{row.original.no_sj || '-'}</span> },
+        { accessorKey: 'notes', header: 'Keterangan', cell: ({ row }) => <span className="text-gray-400 text-xs">{row.original.notes || '-'}</span> },
     ];
 
     return (
@@ -105,19 +160,26 @@ export default function InventoryIndex({ tab, products, packaging, transactions 
             <div className="space-y-6">
                 <div className="flex items-center justify-between">
                     <h1 className="text-2xl font-bold text-white">Inventory</h1>
-                    <Link href="/inventory/transactions/create">
-                        <Button className="bg-[#2563EB] hover:bg-[#2563EB]/90">
-                            <Plus className="mr-2 h-4 w-4" /> New Transaction
-                        </Button>
-                    </Link>
+                    <div className="flex gap-2">
+                        <Link href="/inventory/items">
+                            <Button variant="outline" className="border-[#1F2937] text-gray-300">
+                                <Package className="mr-2 h-4 w-4" /> Items
+                            </Button>
+                        </Link>
+                        <Link href="/inventory/transactions/create">
+                            <Button className="bg-[#2563EB] hover:bg-[#2563EB]/90">
+                                <Plus className="mr-2 h-4 w-4" /> Transaksi Baru
+                            </Button>
+                        </Link>
+                    </div>
                 </div>
 
-                <div className="flex gap-1 rounded-lg bg-[#1F2937] p-1 w-fit">
+                <div className="flex gap-1 rounded-lg bg-[#1F2937] p-1 w-fit flex-wrap">
                     {tabs.map((t) => (
                         <button
                             key={t.key}
                             onClick={() => switchTab(t.key)}
-                            className={`px-4 py-2 text-sm rounded-md transition-colors ${
+                            className={`px-4 py-2 text-sm rounded-md transition-colors whitespace-nowrap ${
                                 currentTab === t.key
                                     ? 'bg-[#2563EB] text-white'
                                     : 'text-gray-400 hover:text-white'
@@ -128,12 +190,22 @@ export default function InventoryIndex({ tab, products, packaging, transactions 
                     ))}
                 </div>
 
+                {currentTab === 'all' && (
+                    <div className="space-y-6">
+                        {allStock.length === 0 ? (
+                            <p className="text-gray-500 text-sm">Belum ada item inventory.</p>
+                        ) : (
+                            <DataTable columns={stockTable} data={allStock} searchColumn="name" searchPlaceholder="Cari item..." />
+                        )}
+                    </div>
+                )}
+
                 {currentTab === 'products' && (
                     <DataTable columns={productColumns} data={products} searchColumn="name" searchPlaceholder="Cari produk..." />
                 )}
 
                 {currentTab === 'packaging' && (
-                    <DataTable columns={packagingColumns} data={packaging} searchColumn="name" searchPlaceholder="Cari packaging..." />
+                    <DataTable columns={productColumns} data={packaging} searchColumn="name" searchPlaceholder="Cari packaging..." />
                 )}
 
                 {currentTab === 'transactions' && (

@@ -27,13 +27,14 @@ class InventoryController extends Controller
         $tab = $request->query('tab', 'products');
         $stock = $this->inventoryService->getAllStock();
 
-        $products = array_filter($stock, fn($i) => in_array($i['category'], ['mozzarella', 'susu_cup']));
-        $packaging = array_filter($stock, fn($i) => $i['category'] === 'packaging');
+        $products = array_values(array_filter($stock, fn($i) => in_array($i['category'], ['mozzarella', 'susu_cup'])));
+        $packaging = array_values(array_filter($stock, fn($i) => $i['category'] === 'packaging'));
 
         return Inertia::render('Inventory/Index', [
             'tab' => $tab,
-            'products' => array_values($products),
-            'packaging' => array_values($packaging),
+            'allStock' => $stock,
+            'products' => $products,
+            'packaging' => $packaging,
             'transactions' => InventoryTransaction::with('item', 'productionBatch')
                 ->orderBy('created_at', 'desc')
                 ->paginate(20),
@@ -68,7 +69,9 @@ class InventoryController extends Controller
         ]);
 
         $currentStock = $this->inventoryService->getCurrentStock($validated['item_id']);
-        if ($item && $currentStock <= $item->minimum_stock) {
+        $health = $this->inventoryService->getStockHealth($currentStock, (float) ($item->minimum_stock ?? 0));
+
+        if (in_array($health, ['low', 'out_of_stock'])) {
             $this->notificationService->create(
                 type: 'inventory_warning',
                 title: 'Stock Rendah: ' . $item->name,
@@ -79,7 +82,7 @@ class InventoryController extends Controller
             );
         }
 
-        return redirect()->route('inventory.index')->with('success', 'Transaksi inventory berhasil.');
+        return redirect()->route('inventory.index', ['tab' => 'all'])->with('success', 'Transaksi inventory berhasil.');
     }
 
     public function items(): Response

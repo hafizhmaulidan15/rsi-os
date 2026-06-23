@@ -45,7 +45,7 @@ test('can create inventory transaction', function () {
     ]);
 
     $response->assertSessionHasNoErrors();
-    $response->assertRedirect(route('inventory.index'));
+    $response->assertRedirect(route('inventory.index', ['tab' => 'all']));
 
     $this->assertDatabaseHas('inventory_transactions', [
         'item_id' => $item->id,
