@@ -6,11 +6,11 @@ use App\Models\ProductionBatch;
 use App\Models\QcResult;
 use App\Models\InventoryTransaction;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Illuminate\Http\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ExportController extends Controller
 {
-    public function csv(string $type): Response
+    public function csv(string $type): StreamedResponse
     {
         $headers = [
             'Content-Type' => 'text/csv',

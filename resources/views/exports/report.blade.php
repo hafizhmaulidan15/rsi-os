@@ -23,7 +23,6 @@
 </head>
 <body>
     <div class="header">
-        <img src="{{ public_path('logo-rsi.webp') }}" alt="RSI Logo" width="50" height="63" style="float:right;margin-top:-8px;">
         <h1>RSI OS — {{ $title ?? 'Laporan' }}</h1>
         <p>Rumah Susu Indonesia — Sistem Informasi Produksi</p>
     </div>
