@@ -3,16 +3,16 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="description" content="RSI OS — Dari Kandang ke Konsumen, Satu Platform. ERP untuk Susu Lokal Berkualitas.">
+        <meta name="description" content="RSI OS — 100% Produk Lokal, Cold Chain System, BPOM Certified. Sistem ERP untuk Rumah Susu Indonesia.">
         <meta name="theme-color" content="#0F172A">
 
         <title inertia>{{ config('app.name', 'Laravel') }}</title>
 
         <!-- Open Graph -->
         <meta property="og:title" content="{{ config('app.name') }}">
-        <meta property="og:description" content="Dari Kandang ke Konsumen, Satu Platform — ERP untuk Susu Lokal Berkualitas.">
+        <meta property="og:description" content="RSI OS — 100% Produk Lokal, Cold Chain System, BPOM Certified.">
         <meta property="og:type" content="website">
-        <meta property="og:image" content="{{ asset('logo-rsi.webp') }}">
+        <meta property="og:image" content="{{ url('logo-rsi.webp') }}">
 
         <!-- Favicon -->
         <link rel="icon" type="image/webp" href="/logo-rsi.webp">
