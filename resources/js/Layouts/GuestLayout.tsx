@@ -32,6 +32,20 @@ export default function GuestLayout({ children }: PropsWithChildren) {
                             produksi susu pasteurisasi Rumah Susu Indonesia —<br />
                             terintegrasi dari hulu ke hilir.
                         </p>
+                        <div className="mt-6 grid grid-cols-3 gap-3">
+                            <div className="rounded-lg border border-[#1F2937] bg-[#111827]/50 p-3 text-center">
+                                <p className="text-xs font-semibold text-white">100% Produk Lokal</p>
+                                <p className="mt-1 text-[10px] text-gray-500">Peternak lokal</p>
+                            </div>
+                            <div className="rounded-lg border border-[#1F2937] bg-[#111827]/50 p-3 text-center">
+                                <p className="text-xs font-semibold text-white">Cold Chain System</p>
+                                <p className="mt-1 text-[10px] text-gray-500">Rantai dingin</p>
+                            </div>
+                            <div className="rounded-lg border border-[#1F2937] bg-[#111827]/50 p-3 text-center">
+                                <p className="text-xs font-semibold text-white">BPOM Certified</p>
+                                <p className="mt-1 text-[10px] text-gray-500">Terjamin</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
