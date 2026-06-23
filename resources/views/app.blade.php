@@ -3,14 +3,14 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="description" content="RSI OS — Sistem ERP Produksi Susu terintegrasi untuk Rumah Susu Indonesia. Manajemen produksi, inventory, QC, dan analitik dalam satu platform.">
+        <meta name="description" content="RSI OS — Dari Kandang ke Konsumen, Satu Platform. ERP untuk Susu Lokal Berkualitas.">
         <meta name="theme-color" content="#0F172A">
 
         <title inertia>{{ config('app.name', 'Laravel') }}</title>
 
         <!-- Open Graph -->
         <meta property="og:title" content="{{ config('app.name') }}">
-        <meta property="og:description" content="Sistem ERP Produksi Susu — Rumah Susu Indonesia">
+        <meta property="og:description" content="Dari Kandang ke Konsumen, Satu Platform — ERP untuk Susu Lokal Berkualitas.">
         <meta property="og:type" content="website">
         <meta property="og:image" content="{{ asset('logo-rsi.webp') }}">
 

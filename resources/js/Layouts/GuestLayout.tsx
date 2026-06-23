@@ -28,11 +28,11 @@ export default function GuestLayout({ children }: PropsWithChildren) {
                         </div>
 
                         <h2 className="mb-3 text-3xl font-bold text-white">
-                            Sistem ERP Peternakan
+                            ERP untuk Susu Lokal Berkualitas
                         </h2>
                         <p className="text-base leading-relaxed text-gray-400">
-                            Manajemen produksi susu, quality control,<br />
-                            inventory, dan traceability dalam satu platform.
+                            Dari Kandang ke Konsumen, Satu Platform.<br />
+                            Manajemen produksi, QC, inventory & traceability.
                         </p>
 
                         <div className="mt-12 grid grid-cols-3 gap-4 text-center">
