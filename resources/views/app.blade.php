@@ -12,9 +12,10 @@
         <meta property="og:title" content="{{ config('app.name') }}">
         <meta property="og:description" content="Sistem ERP Produksi Susu — Rumah Susu Indonesia">
         <meta property="og:type" content="website">
+        <meta property="og:image" content="{{ asset('logo-rsi.webp') }}">
 
         <!-- Favicon -->
-        <link rel="icon" type="image/x-icon" href="/favicon.ico">
+        <link rel="icon" type="image/webp" href="/logo-rsi.webp">
         <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 
         <!-- Fonts -->
