@@ -1,6 +1,7 @@
 import { Toaster } from '@/Components/ui/sonner';
 import { Link, usePage } from '@inertiajs/react';
 import { PropsWithChildren, useEffect, useState } from 'react';
+import { toast } from 'sonner';
 import {
     LayoutDashboard,
     Milk,
@@ -32,6 +33,14 @@ export default function AuthenticatedLayout({ children }: PropsWithChildren) {
     const user = usePage().props.auth.user;
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const { url } = usePage();
+
+    const flash = (usePage().props as any).flash;
+    useEffect(() => {
+        if (flash?.success) toast.success(flash.success);
+        if (flash?.error) toast.error(flash.error);
+        if (flash?.warning) toast.warning(flash.warning);
+        if (flash?.info) toast.info(flash.info);
+    }, [flash?.success, flash?.error, flash?.warning, flash?.info]);
 
     const menuPaths: Record<string, string[]> = {
         'Milk Intake': ['/milk-intake'],

@@ -9,6 +9,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { qcResultSchema, QcResultFormData } from '@/lib/schemas';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 interface Props {
     milkBatches: any[];
@@ -54,7 +55,13 @@ export default function QcCreate({ milkBatches, productionBatches, selectedMilkB
             payload.production_batch_id = data.production_batch_id;
             ['ph','temperature','peroxide','aroma','taste','texture','notes'].forEach(k => { if (data[k as keyof typeof data]) payload[k] = data[k as keyof typeof data]; });
         }
-        router.post('/qc', payload);
+        router.post('/qc', payload, {
+            onSuccess: () => toast.success('Hasil QC berhasil disimpan.'),
+            onError: (err) => {
+                const msg = Object.values(err).flat().join(', ');
+                toast.error(msg || 'Gagal menyimpan hasil QC.');
+            },
+        });
     };
 
     return (
