@@ -17,9 +17,7 @@ export default function GuestLayout({ children }: PropsWithChildren) {
                     <div className="relative z-10 px-12 text-center">
                         <div className="mb-6 flex items-center justify-center gap-3">
                             <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-[#2563EB] shadow-lg shadow-[#2563EB]/30">
-                                <svg viewBox="0 0 24 24" className="h-8 w-8 fill-white">
-                                    <path d="M21 8.5c-.5-.5-4.5-2.5-9-2.5S3.5 8 3 8.5c-.5.5-1 1-1 2s.5 3 1 4c.4.7 1.5 1.5 3 2 1.5.5 3.5.5 6 .5s4.5 0 6-.5c1.5-.5 2.6-1.3 3-2 .5-1 .5-2.5 1-4s-.5-2-1-3zM12 13c-2.5 0-4.5-.7-5-1-.5-.3-.5-.7-.5-1s0-.7.5-1c.5-.3 2.5-1 5-1s4.5.7 5 1c.5.3.5.7.5 1s0 .7-.5 1c-.5.3-2.5 1-5 1z" />
-                                </svg>
+                                <i className="fa-solid fa-cow text-2xl text-white"></i>
                             </div>
                             <div className="text-left">
                                 <h1 className="text-2xl font-bold tracking-tight text-white">RSI OS</h1>
@@ -34,16 +32,19 @@ export default function GuestLayout({ children }: PropsWithChildren) {
                         </p>
                         <div className="mt-6 grid grid-cols-3 gap-3">
                             <div className="rounded-lg border border-[#1F2937] bg-[#111827]/50 p-3 text-center">
-                                <p className="text-xs font-semibold text-white">100% Produk Lokal</p>
-                                <p className="mt-1 text-[10px] text-gray-500">Peternak lokal</p>
+                                <i className="fa-solid fa-store text-sm text-[#60A5FA]"></i>
+                                <p className="mt-1 text-xs font-semibold text-white">100% Produk Lokal</p>
+                                <p className="mt-0.5 text-[10px] text-gray-500">Peternak lokal</p>
                             </div>
                             <div className="rounded-lg border border-[#1F2937] bg-[#111827]/50 p-3 text-center">
-                                <p className="text-xs font-semibold text-white">Cold Chain System</p>
-                                <p className="mt-1 text-[10px] text-gray-500">Rantai dingin</p>
+                                <i className="fa-solid fa-snowflake text-sm text-[#60A5FA]"></i>
+                                <p className="mt-1 text-xs font-semibold text-white">Cold Chain System</p>
+                                <p className="mt-0.5 text-[10px] text-gray-500">Rantai dingin</p>
                             </div>
                             <div className="rounded-lg border border-[#1F2937] bg-[#111827]/50 p-3 text-center">
-                                <p className="text-xs font-semibold text-white">BPOM Certified</p>
-                                <p className="mt-1 text-[10px] text-gray-500">Terjamin</p>
+                                <i className="fa-solid fa-certificate text-sm text-[#60A5FA]"></i>
+                                <p className="mt-1 text-xs font-semibold text-white">BPOM Certified</p>
+                                <p className="mt-0.5 text-[10px] text-gray-500">Terjamin</p>
                             </div>
                         </div>
                     </div>
@@ -55,9 +56,7 @@ export default function GuestLayout({ children }: PropsWithChildren) {
                         {/* Mobile logo */}
                         <div className="mb-8 flex flex-col items-center lg:hidden">
                             <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-[#2563EB] shadow-lg shadow-[#2563EB]/30">
-                                <svg viewBox="0 0 24 24" className="h-7 w-7 fill-white">
-                                    <path d="M21 8.5c-.5-.5-4.5-2.5-9-2.5S3.5 8 3 8.5c-.5.5-1 1-1 2s.5 3 1 4c.4.7 1.5 1.5 3 2 1.5.5 3.5.5 6 .5s4.5 0 6-.5c1.5-.5 2.6-1.3 3-2 .5-1 .5-2.5 1-4s-.5-2-1-3zM12 13c-2.5 0-4.5-.7-5-1-.5-.3-.5-.7-.5-1s0-.7.5-1c.5-.3 2.5-1 5-1s4.5.7 5 1c.5.3.5.7.5 1s0 .7-.5 1c-.5.3-2.5 1-5 1z" />
-                                </svg>
+                                <i className="fa-solid fa-cow text-xl text-white"></i>
                             </div>
                             <h1 className="text-xl font-bold text-white">RSI OS</h1>
                             <p className="text-sm text-gray-500">Rumah Susu Indonesia</p>
