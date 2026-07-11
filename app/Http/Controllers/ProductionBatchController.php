@@ -118,10 +118,10 @@ class ProductionBatchController extends Controller
             'notes' => 'nullable|string',
         ]);
 
-        $steps = $productionBatch->productionSteps()->firstOrNew([]);
-        $steps->fill($validated);
-        $steps->production_batch_id = $productionBatch->id;
-        $steps->save();
+        $steps = $productionBatch->productionSteps()->updateOrCreate(
+            ['production_batch_id' => $productionBatch->id],
+            $validated
+        );
 
         $this->auditService->log('production_steps_updated', 'production_steps', $steps->id, null, $validated);
 

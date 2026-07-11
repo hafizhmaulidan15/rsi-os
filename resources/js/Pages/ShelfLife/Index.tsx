@@ -8,14 +8,15 @@ interface ShelfLifeRecord {
     production_batch: {
         id: number;
         batch_number: string;
+        start_time: string;
         milk_batch: {
             id: number;
             batch_number: string;
             supplier: { name: string } | null;
         } | null;
     } | null;
-    production_date: string;
-    chiller_date: string | null;
+    chiller_in_date: string;
+    chiller_in_time: string;
     expiry_date: string;
     remaining_days: number;
 }
@@ -72,10 +73,10 @@ export default function ShelfLifeIndex({ records }: Props) {
                                                     {record.production_batch?.milk_batch?.supplier?.name ?? '—'}
                                                 </td>
                                                 <td className="py-3 pr-4 text-gray-300">
-                                                    {record.production_date}
+                                                    {record.production_batch?.start_time?.slice(0, 10) ?? '—'}
                                                 </td>
                                                 <td className="py-3 pr-4 text-gray-300">
-                                                    {record.chiller_date ?? '—'}
+                                                    {record.chiller_in_date ?? '—'}
                                                 </td>
                                                 <td className="py-3 pr-4 text-gray-300">
                                                     {record.expiry_date}

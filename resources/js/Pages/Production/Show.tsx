@@ -12,22 +12,69 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { yieldSchema, shelfLifeSchema, YieldFormData, ShelfLifeFormData } from '@/lib/schemas';
 import { FlaskConical as Flask } from 'lucide-react';
 
+interface ProductionBatch {
+    id: number;
+    batch_number: string;
+    production_type: 'mozzarella' | 'susu_cup';
+    start_time: string;
+    end_time: string | null;
+    status: 'production' | 'chiller' | 'ready' | 'closed';
+    notes: string | null;
+    milk_batch?: {
+        batch_number: string;
+        volume_liter: number;
+        supplier?: { name: string };
+        qc_results?: Array<{ id: number; qc_type: string; ph: number | null; aroma: string | null; taste: string | null; result: string }>;
+    };
+    production_steps?: Array<{
+        rennet_ml: number | null;
+        nitric_acid_ml: number | null;
+        target_temperature: number | null;
+        actual_temperature: number | null;
+        holding_time_minutes: number | null;
+        cooling_time_minutes: number | null;
+        notes: string | null;
+    }>;
+    yield_record?: {
+        predicted_yield_kg: number;
+        actual_yield_kg: number;
+        variance_percent: number;
+    };
+    shelf_life_record?: {
+        chiller_in_date: string;
+        chiller_in_time: string;
+        expiry_date: string;
+        remaining_days: number;
+    };
+    qc_results?: Array<{
+        id: number;
+        qc_type: string;
+        ph: number | null;
+        aroma: string | null;
+        taste: string | null;
+        texture: string | null;
+        temperature: number | null;
+        result: string;
+    }>;
+}
+
 interface Props {
-    productionBatch: any;
+    productionBatch: ProductionBatch;
 }
 
 export default function ProductionShow({ productionBatch }: Props) {
     const batch = productionBatch;
     const isMozza = batch.production_type === 'mozzarella';
+    const step = batch.production_steps?.[0];
 
     const [stepForm, setStepForm] = useState({
-        rennet_ml: batch.production_steps?.rennet_ml?.toString() || '',
-        nitric_acid_ml: batch.production_steps?.nitric_acid_ml?.toString() || '',
-        target_temperature: batch.production_steps?.target_temperature?.toString() || '',
-        actual_temperature: batch.production_steps?.actual_temperature?.toString() || '',
-        holding_time_minutes: batch.production_steps?.holding_time_minutes?.toString() || '',
-        cooling_time_minutes: batch.production_steps?.cooling_time_minutes?.toString() || '',
-        notes: batch.production_steps?.notes || '',
+        rennet_ml: step?.rennet_ml?.toString() || '',
+        nitric_acid_ml: step?.nitric_acid_ml?.toString() || '',
+        target_temperature: step?.target_temperature?.toString() || '',
+        actual_temperature: step?.actual_temperature?.toString() || '',
+        holding_time_minutes: step?.holding_time_minutes?.toString() || '',
+        cooling_time_minutes: step?.cooling_time_minutes?.toString() || '',
+        notes: step?.notes || '',
     });
 
     const { register: registerYield, handleSubmit: handleSubmitYield, formState: { errors: yieldErrors } } = useForm<YieldFormData>({

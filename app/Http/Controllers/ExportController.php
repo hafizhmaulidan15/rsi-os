@@ -10,11 +10,18 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ExportController extends Controller
 {
+    private const ALLOWED_TYPES = ['production', 'qc', 'inventory'];
+
     public function csv(string $type): StreamedResponse
     {
+        if (!in_array($type, self::ALLOWED_TYPES)) {
+            abort(404);
+        }
+
+        $safeType = preg_replace('/[^a-z0-9_-]/i', '', $type);
         $headers = [
             'Content-Type' => 'text/csv',
-            'Content-Disposition' => "attachment; filename=\"$type-export.csv\"",
+            'Content-Disposition' => "attachment; filename=\"{$safeType}-export.csv\"",
         ];
 
         $callback = function () use ($type) {
@@ -75,6 +82,11 @@ class ExportController extends Controller
 
     public function pdf(string $type)
     {
+        if (!in_array($type, self::ALLOWED_TYPES)) {
+            abort(404);
+        }
+
+        $safeType = preg_replace('/[^a-z0-9_-]/i', '', $type);
         $data = [];
         switch ($type) {
             case 'production':
@@ -113,6 +125,6 @@ class ExportController extends Controller
         }
 
         $pdf = Pdf::loadView('exports.report', $data);
-        return $pdf->download("$type-report.pdf");
+        return $pdf->download("{$safeType}-report.pdf");
     }
 }
