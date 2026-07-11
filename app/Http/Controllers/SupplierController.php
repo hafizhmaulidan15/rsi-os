@@ -59,6 +59,10 @@ class SupplierController extends Controller
 
     public function destroy(Supplier $supplier): RedirectResponse
     {
+        if ($supplier->milkBatches()->exists()) {
+            return back()->with('error', 'Tidak dapat menghapus supplier karena masih memiliki data pengiriman susu.');
+        }
+
         $supplier->delete();
         $this->auditService->log('supplier_deleted', 'suppliers', $supplier->id);
 

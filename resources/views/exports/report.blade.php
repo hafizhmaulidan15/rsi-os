@@ -50,7 +50,7 @@
                 <tr>
                     @if(!empty($columns))
                         @foreach($columns as $col)
-                            <td>{!! $item[$col] ?? '-' !!}</td>
+                            <td>{{ $item[$col] ?? '-' }}</td>
                         @endforeach
                     @else
                         @foreach((array)$item->toArray() as $val)

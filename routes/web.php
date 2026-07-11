@@ -80,7 +80,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::prefix('settings')->group(function () {
         Route::get('/', [SettingController::class, 'index'])->name('settings.index');
-        Route::match(['post', 'put'], '/', [SettingController::class, 'update'])->name('settings.update');
     });
 
     Route::prefix('purchase-order')->group(function () {
@@ -100,9 +99,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::get('/audit-logs', [\App\Http\Controllers\AuditLogController::class, 'index'])->name('audit-logs.index');
-
-    Route::resource('users', \App\Http\Controllers\UserController::class)->except(['show']);
+    Route::middleware('can:is-admin')->group(function () {
+        Route::get('/audit-logs', [\App\Http\Controllers\AuditLogController::class, 'index'])->name('audit-logs.index');
+        Route::resource('users', \App\Http\Controllers\UserController::class)->except(['show']);
+        Route::match(['post', 'put'], '/settings', [SettingController::class, 'update'])->name('settings.update');
+    });
 });
 
 require __DIR__.'/auth.php';
