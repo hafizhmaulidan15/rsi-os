@@ -9,6 +9,7 @@ use App\Http\Requests\StoreQcResultRequest;
 use App\Services\QCEngine;
 use App\Services\AuditService;
 use App\Services\NotificationService;
+use Illuminate\Support\Facades\Auth;
 
 class QcResultController extends Controller
 {
@@ -34,12 +35,13 @@ class QcResultController extends Controller
 
         if ($result['result'] === 'reject') {
             $batchNumber = $qcResult->milkBatch?->batch_number ?? 'Unknown';
+            $adminId = User::where('role', 'admin')->first()->id ?? Auth::id();
             $this->notificationService->create(
                 'qc_warning',
                 "QC Failed: {$batchNumber}",
                 "Batch ditolak karena: " . implode(', ', $result['warnings']),
                 User::class,
-                1,
+                $adminId,
                 ['qc_result_id' => $qcResult->id]
             );
         }

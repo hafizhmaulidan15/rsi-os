@@ -86,6 +86,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('purchase-order')->group(function () {
         Route::get('/', [PurchaseOrderController::class, 'index'])->name('purchase-order.index');
         Route::post('/save', [PurchaseOrderController::class, 'save'])->name('purchase-order.save');
+        Route::post('/submit', [PurchaseOrderController::class, 'submit'])->name('purchase-order.submit');
         Route::post('/clear', [PurchaseOrderController::class, 'clear'])->name('purchase-order.clear');
         Route::post('/add-item', [PurchaseOrderController::class, 'addItem'])->name('purchase-order.add-item');
     });

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\InventoryItem;
+use App\Models\PurchaseOrder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class PurchaseOrderController extends Controller
@@ -33,8 +35,13 @@ class PurchaseOrderController extends Controller
             'quantity' => $qty,
         ])->filter(fn($i) => $i['item'] !== null)->values();
 
+        $purchaseOrders = PurchaseOrder::with('items.inventoryItem')
+            ->latest()
+            ->paginate(10);
+
         return Inertia::render('Inventory/PurchaseOrder', [
             'poItems' => $itemsWithQty,
+            'purchaseOrders' => $purchaseOrders,
         ]);
     }
 
@@ -44,6 +51,7 @@ class PurchaseOrderController extends Controller
             'items' => 'required|array',
             'items.*.id' => 'required|exists:inventory_items,id',
             'items.*.qty' => 'required|integer|min:0',
+            'notes' => 'nullable|string',
         ]);
 
         $po = [];
@@ -56,6 +64,38 @@ class PurchaseOrderController extends Controller
         session()->put('purchase_order', $po);
 
         return redirect()->back()->with('success', 'Purchase Order tersimpan.');
+    }
+
+    public function submit(Request $request)
+    {
+        $cart = session()->get('purchase_order', []);
+
+        if (empty($cart)) {
+            return redirect()->back()->with('error', 'Keranjang PO kosong.');
+        }
+
+        $validated = $request->validate([
+            'notes' => 'nullable|string',
+        ]);
+
+        DB::transaction(function () use ($cart, $validated) {
+            $po = PurchaseOrder::create([
+                'po_number' => 'PO-' . date('YmdHis'),
+                'status' => 'draft',
+                'notes' => $validated['notes'] ?? null,
+            ]);
+
+            $items = collect($cart)->map(fn($qty, $itemId) => [
+                'inventory_item_id' => $itemId,
+                'quantity' => $qty,
+            ])->values()->all();
+
+            $po->items()->createMany($items);
+        });
+
+        session()->forget('purchase_order');
+
+        return redirect()->route('purchase-order.index')->with('success', 'PO berhasil dibuat dan tersimpan di database.');
     }
 
     public function clear()

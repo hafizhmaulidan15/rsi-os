@@ -65,16 +65,17 @@ interface Props {
 export default function ProductionShow({ productionBatch }: Props) {
     const batch = productionBatch;
     const isMozza = batch.production_type === 'mozzarella';
-    const step = batch.production_steps?.[0];
+    const steps = batch.production_steps ?? [];
+    const firstStep = steps[0];
 
     const [stepForm, setStepForm] = useState({
-        rennet_ml: step?.rennet_ml?.toString() || '',
-        nitric_acid_ml: step?.nitric_acid_ml?.toString() || '',
-        target_temperature: step?.target_temperature?.toString() || '',
-        actual_temperature: step?.actual_temperature?.toString() || '',
-        holding_time_minutes: step?.holding_time_minutes?.toString() || '',
-        cooling_time_minutes: step?.cooling_time_minutes?.toString() || '',
-        notes: step?.notes || '',
+        rennet_ml: firstStep?.rennet_ml?.toString() || '',
+        nitric_acid_ml: firstStep?.nitric_acid_ml?.toString() || '',
+        target_temperature: firstStep?.target_temperature?.toString() || '',
+        actual_temperature: firstStep?.actual_temperature?.toString() || '',
+        holding_time_minutes: firstStep?.holding_time_minutes?.toString() || '',
+        cooling_time_minutes: firstStep?.cooling_time_minutes?.toString() || '',
+        notes: firstStep?.notes || '',
     });
 
     const { register: registerYield, handleSubmit: handleSubmitYield, formState: { errors: yieldErrors } } = useForm<YieldFormData>({
@@ -329,7 +330,7 @@ export default function ProductionShow({ productionBatch }: Props) {
                         <CardTitle className="text-white">Riwayat QC</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        {batch.qc_results?.length > 0 ? batch.qc_results.map((qc: any) => (
+                        {batch.qc_results?.length > 0 ? batch.qc_results.map((qc) => (
                             <div key={qc.id} className="flex items-center justify-between border-b border-[#1F2937] py-2 last:border-0">
                                 <div>
                                     <p className="text-sm text-white capitalize">{qc.qc_type === 'pasteurized' ? 'Produk' : qc.qc_type} QC</p>
