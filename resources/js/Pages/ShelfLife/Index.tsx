@@ -44,7 +44,7 @@ export default function ShelfLifeIndex({ records }: Props) {
                     <p className="mt-1 text-sm text-gray-400">Track expiry dates and remaining shelf life of all production batches</p>
                 </div>
 
-                <Card>
+                <Card className="border-[#1F2937] bg-[#111827]">
                     <CardHeader>
                         <CardTitle className="text-white">Riwayat Shelf Life</CardTitle>
                     </CardHeader>

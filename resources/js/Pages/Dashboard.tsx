@@ -18,7 +18,7 @@ interface ProductionBatch {
     batch_number: string;
     production_type: 'mozzarella' | 'susu_cup';
     status: 'production' | 'chiller' | 'ready' | 'closed';
-    milk_batch: MilkBatch | null;
+    milkBatch: MilkBatch | null;
 }
 
 interface QcResult {
@@ -27,14 +27,14 @@ interface QcResult {
     total_solids: number | null;
     fat: number | null;
     result: 'pass' | 'reject';
-    milk_batch: MilkBatch | null;
-    production_batch: { batch_number: string } | null;
+    milkBatch: MilkBatch | null;
+    productionBatch: { batch_number: string } | null;
 }
 
 interface ShelfLifeAlert {
     id: number;
     remaining_days: number;
-    production_batch: { batch_number: string } | null;
+    productionBatch: { batch_number: string } | null;
 }
 
 interface InventoryItem {
@@ -149,7 +149,7 @@ export default function Dashboard({
                                     {latestQc.map((qc) => (
                                         <div key={qc.id} className="flex items-center justify-between border-b border-[#1F2937] pb-2 last:border-0">
                                             <div>
-                                                <p className="text-sm font-medium text-white">{qc.milk_batch?.supplier?.name || qc.production_batch?.batch_number || '-'}</p>
+                                                 <p className="text-sm font-medium text-white">{qc.milkBatch?.supplier?.name || qc.productionBatch?.batch_number || '-'}</p>
                                                 <p className="text-xs text-gray-500">{qc.qc_type === 'pasteurized' ? 'Pasteurisasi' : 'Mentah'} | TS: {qc.total_solids ?? '-'} | Fat: {qc.fat ?? '-'}</p>
                                             </div>
                                             <Badge variant={qc.result === 'pass' ? 'success' : 'danger'}>
@@ -207,13 +207,13 @@ export default function Dashboard({
                             <div className="space-y-2">
                                 {expiredBatches.map((s) => (
                                     <div key={s.id} className="flex items-center justify-between rounded-lg bg-[#DC2626]/10 p-2">
-                                        <span className="text-sm text-white">{s.production_batch?.batch_number}</span>
+                                         <span className="text-sm text-white">{s.productionBatch?.batch_number}</span>
                                         <Badge variant="danger">Expired</Badge>
                                     </div>
                                 ))}
                                 {shelfLifeAlerts.map((s) => (
                                     <div key={s.id} className="flex items-center justify-between rounded-lg bg-[#D97706]/10 p-2">
-                                        <span className="text-sm text-white">{s.production_batch?.batch_number}</span>
+                                         <span className="text-sm text-white">{s.productionBatch?.batch_number}</span>
                                         <Badge variant="warning">{s.remaining_days} hari lagi</Badge>
                                     </div>
                                 ))}
@@ -235,7 +235,7 @@ export default function Dashboard({
                                     <div key={batch.id} className="flex items-center justify-between border-b border-[#1F2937] pb-2">
                                         <div>
                                             <p className="text-sm font-medium text-white">{batch.batch_number}</p>
-                                            <p className="text-xs text-gray-500">{batch.milk_batch?.supplier?.name}</p>
+                                             <p className="text-xs text-gray-500">{batch.milkBatch?.supplier?.name}</p>
                                         </div>
                                         <Badge variant={batch.status === 'chiller' ? 'warning' : 'default'}>
                                             {batch.status}

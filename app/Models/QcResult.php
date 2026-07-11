@@ -33,6 +33,13 @@ class QcResult extends Model
         'warnings',
     ];
 
+    protected function casts(): array
+    {
+        return [
+            'warnings' => 'array',
+        ];
+    }
+
     public function milkBatch(): BelongsTo
     {
         return $this->belongsTo(MilkBatch::class);

@@ -29,12 +29,12 @@ class DashboardController extends Controller
             ->get();
 
         $shelfLifeAlerts = ShelfLifeRecord::with('productionBatch')
-            ->where('remaining_days', '<=', 3)
-            ->where('remaining_days', '>', 0)
+            ->whereColumn('expiry_date', '>=', now())
+            ->where('expiry_date', '<=', now()->addDays(3))
             ->get();
 
         $expiredBatches = ShelfLifeRecord::with('productionBatch')
-            ->where('remaining_days', '<=', 0)
+            ->where('expiry_date', '<', now())
             ->get();
 
         $inventorySummary = $this->inventoryService->getAllStock();

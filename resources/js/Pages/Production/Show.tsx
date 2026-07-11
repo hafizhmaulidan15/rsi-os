@@ -20,7 +20,7 @@ interface ProductionBatch {
     end_time: string | null;
     status: 'production' | 'chiller' | 'ready' | 'closed';
     notes: string | null;
-    milk_batch?: {
+    milkBatch?: {
         batch_number: string;
         volume_liter: number;
         supplier?: { name: string };

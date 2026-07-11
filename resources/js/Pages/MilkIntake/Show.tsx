@@ -69,9 +69,9 @@ export default function MilkIntakeShow({ milkBatch }: Props) {
                             <CardTitle className="text-white">QC Results</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            {milkBatch.qc_results?.length > 0 ? (
+                            {milkBatch.qcResults?.length > 0 ? (
                                 <div className="space-y-2">
-                                    {milkBatch.qc_results.map((qc: any) => (
+                                    {milkBatch.qcResults.map((qc: any) => (
                                         <div key={qc.id} className="flex items-center justify-between rounded-lg bg-[#1F2937] p-3">
                                             <div>
                                                 <p className="text-sm text-white capitalize">{qc.qc_type} QC</p>

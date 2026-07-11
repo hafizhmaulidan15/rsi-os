@@ -10,7 +10,7 @@ interface ProductionBatch {
     id: number;
     batch_number: string;
     production_type: string;
-    milk_batch: { supplier: { name: string } } | null;
+    milkBatch: { supplier: { name: string } } | null;
     start_time: string | null;
     status: string;
 }

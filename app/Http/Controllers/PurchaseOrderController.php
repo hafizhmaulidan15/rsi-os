@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\InventoryItem;
 use App\Models\PurchaseOrder;
+use App\Services\AuditService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class PurchaseOrderController extends Controller
 {
+    public function __construct(private AuditService $auditService) {}
     public function addItem(Request $request)
     {
         $data = $request->validate([
@@ -91,6 +93,12 @@ class PurchaseOrderController extends Controller
             ])->values()->all();
 
             $po->items()->createMany($items);
+
+            $this->auditService->log('purchase_order_created', 'purchase_orders', $po->id, null, [
+                'po_number' => $po->po_number,
+                'items_count' => count($items),
+                'notes' => $validated['notes'] ?? null,
+            ]);
         });
 
         session()->forget('purchase_order');
