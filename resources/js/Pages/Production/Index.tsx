@@ -42,7 +42,7 @@ const statusLabel = (status: string) => {
 
 export default function ProductionIndex({ productionBatches, filter = 'all' }: Props) {
     const tabs = [
-        { label: 'All Batches', href: '/production/batches', key: 'all' },
+        { label: 'All Batches', href: '/production', key: 'all' },
         { label: 'Mozzarella', href: '/production/mozzarella', key: 'mozzarella' },
         { label: 'Susu Cup', href: '/production/susu-cup', key: 'susu_cup' },
     ];

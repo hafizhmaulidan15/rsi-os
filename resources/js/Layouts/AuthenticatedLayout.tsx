@@ -87,7 +87,7 @@ export default function AuthenticatedLayout({ children }: PropsWithChildren) {
             children: [
                 { label: 'Mozzarella', href: '/production/mozzarella' },
                 { label: 'Susu Cup', href: '/production/susu-cup' },
-                { label: 'Batch Tracking', href: '/production/batches' },
+                { label: 'Batch Tracking', href: '/production' },
             ],
         },
         {

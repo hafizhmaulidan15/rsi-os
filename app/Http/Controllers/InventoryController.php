@@ -80,7 +80,7 @@ class InventoryController extends Controller
         $health = $this->inventoryService->getStockHealth($currentStock, (float) ($item->minimum_stock ?? 0));
 
         if (in_array($health, ['low', 'out_of_stock'])) {
-            $adminId = \App\Models\User::where('role', 'admin')->first()->id ?? Auth::id();
+            $adminId = \App\Models\User::where('role', 'admin')->value('id') ?? Auth::id();
             $this->notificationService->create(
                 type: 'inventory_warning',
                 title: 'Stock Rendah: ' . $item->name,

@@ -122,6 +122,20 @@ class ExportController extends Controller
                 $data['title'] = 'Laporan Quality Control';
                 $data['columns'] = ['Batch', 'Tipe', 'Supplier', 'pH', 'TS', 'Lemak', 'Protein', 'Aroma', 'Rasa', 'Hasil', 'Tanggal'];
                 break;
+            case 'inventory':
+                $data['items'] = InventoryTransaction::with('item')
+                    ->latest()
+                    ->get()
+                    ->map(fn($t) => [
+                        'Item' => $t->item?->name ?? '-',
+                        'Tipe' => $t->transaction_type === 'in' ? 'Masuk' : 'Keluar',
+                        'Jumlah' => $t->quantity,
+                        'Tanggal' => $t->transaction_date?->format('d/m/Y'),
+                        'Catatan' => $t->notes ?? '-',
+                    ]);
+                $data['title'] = 'Laporan Inventory';
+                $data['columns'] = ['Item', 'Tipe', 'Jumlah', 'Tanggal', 'Catatan'];
+                break;
         }
 
         $pdf = Pdf::loadView('exports.report', $data);

@@ -35,7 +35,7 @@ class QcResultController extends Controller
 
         if ($result['result'] === 'reject') {
             $batchNumber = $qcResult->milkBatch?->batch_number ?? 'Unknown';
-            $adminId = User::where('role', 'admin')->first()->id ?? Auth::id();
+            $adminId = User::where('role', 'admin')->value('id') ?? Auth::id();
             $this->notificationService->create(
                 'qc_warning',
                 "QC Failed: {$batchNumber}",
