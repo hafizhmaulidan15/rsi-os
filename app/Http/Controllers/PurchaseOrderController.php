@@ -76,7 +76,7 @@ class PurchaseOrderController extends Controller
             'items' => $items->map(fn($i) => [
                 'id' => $i->id,
                 'name' => $i->name,
-                'sku' => $i->sku,
+                'item_code' => $i->item_code,
                 'quantity' => $po[$i->id],
             ]),
         ]);

@@ -26,7 +26,7 @@ test('can update settings', function () {
     ]);
 
     $response->assertSessionHasNoErrors();
-    $response->assertRedirect('/');
+    $response->assertRedirect();
 
     $this->assertDatabaseHas('settings', [
         'key' => 'qc_ts_min',

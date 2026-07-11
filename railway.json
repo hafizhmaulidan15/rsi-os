@@ -3,7 +3,7 @@
     "builder": "NIXPACKS"
   },
   "deploy": {
-    "startCommand": "cp .env.example .env && php artisan key:generate --force && php artisan migrate --force && php artisan db:seed --force && php artisan serve --host=0.0.0.0 --port=$PORT",
+    "startCommand": "php artisan migrate --force && php artisan db:seed --force && php -S 0.0.0.0:$PORT -t public",
     "healthcheckPath": "/health",
     "restartPolicyType": "ON_FAILURE"
   }

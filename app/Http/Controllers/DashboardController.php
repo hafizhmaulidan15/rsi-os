@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Dashboard;
 use App\Models\MilkBatch;
 use App\Models\ProductionBatch;
 use App\Models\QcResult;

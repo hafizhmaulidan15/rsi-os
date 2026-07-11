@@ -3,7 +3,6 @@
 namespace App\Providers;
 
 use App\Database\Connectors\NeonPostgresConnector;
-use Illuminate\Database\Connection;
 use Illuminate\Support\ServiceProvider;
 
 class NeonDatabaseServiceProvider extends ServiceProvider

@@ -19,12 +19,12 @@ class InventoryController extends Controller
             'name' => $item->name,
             'category' => $item->category,
             'unit' => $item->unit,
-            'stock' => $this->inventoryService->getStock($item->id),
+            'stock' => $this->inventoryService->getCurrentStock($item->id),
             'minimum_stock' => $item->minimum_stock,
         ]);
     }
     
-    public function items() { return InventoryItem::where('is_active', true)->get(); }
+    public function items() { return InventoryItem::where('is_active', true)->paginate(20); }
     
     public function storeTransaction(StoreInventoryTransactionRequest $request) {
         return InventoryTransaction::create($request->validated());

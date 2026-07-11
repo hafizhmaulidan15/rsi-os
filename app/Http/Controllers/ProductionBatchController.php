@@ -192,4 +192,31 @@ class ProductionBatchController extends Controller
 
         return redirect()->back()->with('success', 'Data shelf life disimpan.');
     }
+
+    public function updateStatus(Request $request, ProductionBatch $productionBatch): RedirectResponse
+    {
+        $validated = $request->validate([
+            'status' => 'required|in:chiller,ready,closed',
+        ]);
+
+        $old = $productionBatch->toArray();
+        $updateData = ['status' => $validated['status']];
+
+        if ($validated['status'] === 'closed' && $productionBatch->status !== 'closed') {
+            $updateData['end_time'] = now();
+        }
+
+        $productionBatch->update($updateData);
+
+        $this->auditService->log('production_batch_updated', 'production_batches', $productionBatch->id, $old, $updateData);
+
+        $label = match ($validated['status']) {
+            'chiller' => 'masuk chiller',
+            'ready' => 'siap dijual',
+            'closed' => 'ditutup',
+            default => 'diupdate',
+        };
+
+        return redirect()->back()->with('success', "Batch berhasil {$label}.");
+    }
 }

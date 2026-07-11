@@ -10,6 +10,7 @@ use App\Services\NotificationService;
 use App\Services\QCEngine;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -75,7 +76,7 @@ class QcResultController extends Controller
                 title: 'QC Failed: ' . $batchNumber,
                 message: 'Batch ditolak karena ' . implode(', ', $evaluation['warnings'] ?? ['QC gagal']),
                 notifiableType: 'App\Models\User',
-                notifiableId: 1,
+                notifiableId: Auth::id(),
                 data: ['qc_result_id' => $qcResult->id, 'milk_batch_id' => $validated['milk_batch_id'] ?? null],
             );
         }

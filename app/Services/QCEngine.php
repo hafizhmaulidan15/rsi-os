@@ -62,11 +62,11 @@ class QCEngine
     private function getThresholds(): array
     {
         return [
-            'ts_min' => (float) Setting::where('key', 'qc_ts_min')->value('value') ?? 11.0,
-            'protein_min' => (float) Setting::where('key', 'qc_protein_min')->value('value') ?? 2.8,
-            'fat_min' => (float) Setting::where('key', 'qc_fat_min')->value('value') ?? 3.0,
-            'ph_min' => (float) Setting::where('key', 'qc_ph_min')->value('value') ?? 6.4,
-            'ph_max' => (float) Setting::where('key', 'qc_ph_max')->value('value') ?? 6.8,
+            'ts_min' => (float) (Setting::where('key', 'qc_ts_min')->value('value') ?? 11.0),
+            'protein_min' => (float) (Setting::where('key', 'qc_protein_min')->value('value') ?? 2.8),
+            'fat_min' => (float) (Setting::where('key', 'qc_fat_min')->value('value') ?? 3.0),
+            'ph_min' => (float) (Setting::where('key', 'qc_ph_min')->value('value') ?? 6.4),
+            'ph_max' => (float) (Setting::where('key', 'qc_ph_max')->value('value') ?? 6.8),
         ];
     }
 }

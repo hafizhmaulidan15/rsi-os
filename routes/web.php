@@ -51,11 +51,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/', [ProductionBatchController::class, 'store'])->name('production.store');
         Route::get('/mozzarella', [ProductionBatchController::class, 'mozzarella'])->name('production.mozzarella');
         Route::get('/susu-cup', [ProductionBatchController::class, 'susuCup'])->name('production.susu-cup');
-        Route::get('/batches', [ProductionBatchController::class, 'index'])->name('production.batches');
         Route::get('/{productionBatch}', [ProductionBatchController::class, 'show'])->name('production.show');
         Route::post('/{productionBatch}/steps', [ProductionBatchController::class, 'updateSteps'])->name('production.steps');
         Route::post('/{productionBatch}/yield', [ProductionBatchController::class, 'updateYield'])->name('production.yield');
         Route::post('/{productionBatch}/shelf-life', [ProductionBatchController::class, 'updateShelfLife'])->name('production.shelf-life');
+        Route::post('/{productionBatch}/status', [ProductionBatchController::class, 'updateStatus'])->name('production.status');
     });
 
     Route::prefix('inventory')->group(function () {

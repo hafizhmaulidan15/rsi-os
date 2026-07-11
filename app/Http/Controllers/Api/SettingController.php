@@ -9,7 +9,13 @@ class SettingController extends Controller
 {
     public function index() { return Setting::all(); }
     public function update(\Illuminate\Http\Request $request) {
-        foreach ($request->input('settings', []) as $setting) {
+        $validated = $request->validate([
+            'settings' => 'required|array',
+            'settings.*.key' => 'required|string|exists:settings,key',
+            'settings.*.value' => 'required|string',
+        ]);
+
+        foreach ($validated['settings'] as $setting) {
             Setting::where('key', $setting['key'])->update(['value' => $setting['value']]);
         }
         return Setting::all();

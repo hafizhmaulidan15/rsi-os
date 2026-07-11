@@ -11,6 +11,7 @@ use App\Services\InventoryService;
 use App\Services\NotificationService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -84,7 +85,7 @@ class InventoryController extends Controller
                 title: 'Stock Rendah: ' . $item->name,
                 message: "Stok {$item->name} tersisa {$currentStock} {$item->unit} (min: {$item->minimum_stock})",
                 notifiableType: 'App\Models\User',
-                notifiableId: 1,
+                notifiableId: Auth::id(),
                 data: ['item_id' => $item->id, 'current_stock' => $currentStock, 'minimum_stock' => $item->minimum_stock],
             );
         }

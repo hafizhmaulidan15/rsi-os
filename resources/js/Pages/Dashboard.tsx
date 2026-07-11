@@ -1,17 +1,59 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, Link } from '@inertiajs/react';
+import { Head } from '@inertiajs/react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/Components/ui/card';
 import { Badge } from '@/Components/ui/badge';
-import { Milk, Factory, FlaskConical, Package, AlertTriangle, Clock, Server, TrendingDown } from 'lucide-react';
+import { Milk, Factory, FlaskConical, AlertTriangle, Clock, Server, TrendingDown } from 'lucide-react';
+
+interface Supplier {
+    name: string;
+}
+
+interface MilkBatch {
+    batch_number: string;
+    supplier: Supplier | null;
+}
+
+interface ProductionBatch {
+    id: number;
+    batch_number: string;
+    production_type: 'mozzarella' | 'susu_cup';
+    status: 'production' | 'chiller' | 'ready' | 'closed';
+    milk_batch: MilkBatch | null;
+}
+
+interface QcResult {
+    id: number;
+    qc_type: 'raw' | 'pasteurized' | 'mozzarella';
+    total_solids: number | null;
+    fat: number | null;
+    result: 'pass' | 'reject';
+    milk_batch: MilkBatch | null;
+    production_batch: { batch_number: string } | null;
+}
+
+interface ShelfLifeAlert {
+    id: number;
+    remaining_days: number;
+    production_batch: { batch_number: string } | null;
+}
+
+interface InventoryItem {
+    id: number;
+    name: string;
+    unit: string;
+    stock: number;
+    minimum_stock: number;
+    health: 'ok' | 'medium' | 'low' | 'out_of_stock';
+}
 
 interface PageProps {
-    activeBatches: any[];
+    activeBatches: ProductionBatch[];
     todayProduction: number;
     todayQc: number;
-    latestQc: any[];
-    shelfLifeAlerts: any[];
-    expiredBatches: any[];
-    inventorySummary: any[];
+    latestQc: QcResult[];
+    shelfLifeAlerts: ShelfLifeAlert[];
+    expiredBatches: ShelfLifeAlert[];
+    inventorySummary: InventoryItem[];
 }
 
 export default function Dashboard({
@@ -88,7 +130,7 @@ export default function Dashboard({
                         </CardHeader>
                         <CardContent>
                             <div className="text-2xl font-bold text-white">
-                                {inventorySummary.filter((i: any) => i.health === 'low' || i.health === 'out_of_stock').length}
+                                {inventorySummary.filter((i) => i.health === 'low' || i.health === 'out_of_stock').length}
                             </div>
                         </CardContent>
                     </Card>
@@ -104,7 +146,7 @@ export default function Dashboard({
                                 <p className="text-sm text-gray-500">Belum ada data QC</p>
                             ) : (
                                 <div className="space-y-3">
-                                    {latestQc.map((qc: any) => (
+                                    {latestQc.map((qc) => (
                                         <div key={qc.id} className="flex items-center justify-between border-b border-[#1F2937] pb-2 last:border-0">
                                             <div>
                                                 <p className="text-sm font-medium text-white">{qc.milk_batch?.supplier?.name || qc.production_batch?.batch_number || '-'}</p>
@@ -129,7 +171,7 @@ export default function Dashboard({
                                 <p className="text-sm text-gray-500">Belum ada data inventory</p>
                             ) : (
                                 <div className="space-y-2">
-                                    {inventorySummary.map((item: any) => {
+                                    {inventorySummary.map((item) => {
                                         const ratio = item.minimum_stock > 0 ? Math.min(item.stock / item.minimum_stock, 2) / 2 : 0;
                                         const healthColor = item.health === 'ok' ? 'bg-[#16A34A]' : item.health === 'medium' ? 'bg-[#D97706]' : item.health === 'low' ? 'bg-[#DC2626]' : 'bg-[#6B7280]';
                                         const healthLabel = item.health === 'ok' ? 'Aman' : item.health === 'medium' ? 'Cukup' : item.health === 'low' ? 'Rendah' : 'Habis';
@@ -163,13 +205,13 @@ export default function Dashboard({
                         </CardHeader>
                         <CardContent>
                             <div className="space-y-2">
-                                {expiredBatches.map((s: any) => (
+                                {expiredBatches.map((s) => (
                                     <div key={s.id} className="flex items-center justify-between rounded-lg bg-[#DC2626]/10 p-2">
                                         <span className="text-sm text-white">{s.production_batch?.batch_number}</span>
                                         <Badge variant="danger">Expired</Badge>
                                     </div>
                                 ))}
-                                {shelfLifeAlerts.map((s: any) => (
+                                {shelfLifeAlerts.map((s) => (
                                     <div key={s.id} className="flex items-center justify-between rounded-lg bg-[#D97706]/10 p-2">
                                         <span className="text-sm text-white">{s.production_batch?.batch_number}</span>
                                         <Badge variant="warning">{s.remaining_days} hari lagi</Badge>
@@ -185,11 +227,11 @@ export default function Dashboard({
                         <CardTitle className="text-white">Mozzarella Chiller</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        {activeBatches.filter((b: any) => b.production_type === 'mozzarella').length === 0 ? (
+                        {activeBatches.filter((b) => b.production_type === 'mozzarella').length === 0 ? (
                             <p className="text-sm text-gray-500">Tidak ada batch mozzarella di chiller</p>
                         ) : (
                             <div className="space-y-2">
-                                {activeBatches.filter((b: any) => b.production_type === 'mozzarella').map((batch: any) => (
+                                {activeBatches.filter((b) => b.production_type === 'mozzarella').map((batch) => (
                                     <div key={batch.id} className="flex items-center justify-between border-b border-[#1F2937] pb-2">
                                         <div>
                                             <p className="text-sm font-medium text-white">{batch.batch_number}</p>

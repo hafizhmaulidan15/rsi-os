@@ -6,7 +6,6 @@ use App\Models\ProductionBatch;
 use App\Models\QcResult;
 use App\Models\YieldRecord;
 use App\Models\ShelfLifeRecord;
-use App\Models\InventoryTransaction;
 use App\Models\InventoryItem;
 use App\Models\MilkBatch;
 use Illuminate\Http\Request;
@@ -65,15 +64,23 @@ class AnalyticsController extends Controller
                 'remaining_days' => $s->remaining_days,
             ]);
 
-        $inventoryTrend = InventoryItem::where('is_active', true)->get()->map(function ($item) {
-            $in = (float) InventoryTransaction::where('item_id', $item->id)->where('transaction_type', 'in')->sum('quantity');
-            $out = (float) InventoryTransaction::where('item_id', $item->id)->where('transaction_type', 'out')->sum('quantity');
-            return [
-                'item' => $item->name,
-                'stock' => $in - $out,
-                'min_stock' => $item->minimum_stock,
-            ];
-        });
+        $inventoryTrend = InventoryItem::where('is_active', true)
+            ->leftJoin('inventory_transactions', function ($join) {
+                $join->on('inventory_items.id', '=', 'inventory_transactions.item_id');
+            })
+            ->select(
+                'inventory_items.name as item',
+                'inventory_items.minimum_stock as min_stock',
+                DB::raw('COALESCE(SUM(CASE WHEN inventory_transactions.transaction_type = \'in\' THEN inventory_transactions.quantity ELSE 0 END), 0) as stock_in'),
+                DB::raw('COALESCE(SUM(CASE WHEN inventory_transactions.transaction_type = \'out\' THEN ABS(inventory_transactions.quantity) ELSE 0 END), 0) as stock_out')
+            )
+            ->groupBy('inventory_items.id', 'inventory_items.name', 'inventory_items.minimum_stock')
+            ->get()
+            ->map(fn($item) => [
+                'item' => $item->item,
+                'stock' => $item->stock_in - $item->stock_out,
+                'min_stock' => $item->min_stock,
+            ]);
 
         return Inertia::render('Analytics/Index', [
             'yieldData' => $yieldData,
