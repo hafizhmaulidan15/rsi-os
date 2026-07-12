@@ -8,7 +8,7 @@ class YieldEngine
 {
     public function predict(float $volumeLiters, float $totalSolids, ?float $factor = null): float
     {
-        $f = $factor ?? (float) (Setting::where('key', 'yield_default_factor')->value('value') ?? 0.12);
+        $f = $factor ?? (float) (Setting::where('key', 'yield_default_factor')->value('value') ?? 0.85);
         return round($volumeLiters * ($totalSolids / 100) * $f, 2);
     }
 

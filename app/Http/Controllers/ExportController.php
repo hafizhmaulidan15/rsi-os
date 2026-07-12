@@ -114,9 +114,7 @@ class ExportController extends Controller
                         'Protein' => $q->protein ?? '-',
                         'Aroma' => $q->aroma ?? '-',
                         'Rasa' => $q->taste ?? '-',
-                        'Hasil' => $q->result === 'pass'
-                            ? '<span class="badge badge-pass">LULUS</span>'
-                            : '<span class="badge badge-reject">DITOLAK</span>',
+                        'Hasil' => $q->result === 'pass' ? 'LULUS' : 'DITOLAK',
                         'Tanggal' => $q->created_at?->format('d/m/Y'),
                     ]);
                 $data['title'] = 'Laporan Quality Control';

@@ -8,30 +8,31 @@ class BatchNumberService
 {
     public function generate(string $prefix): string
     {
-        $date = now()->format('Ymd');
+        return DB::transaction(function () use ($prefix) {
+            $date = now()->format('Ymd');
 
-        $table = match ($prefix) {
-            'RM' => 'milk_batches',
-            'MZ' => 'production_batches',
-            'SC' => 'production_batches',
-            default => 'milk_batches',
-        };
+            $table = match ($prefix) {
+                'RM' => 'milk_batches',
+                'MZ' => 'production_batches',
+                'SC' => 'production_batches',
+                default => 'milk_batches',
+            };
 
-        $column = 'batch_number';
+            $lastBatch = DB::table($table)
+                ->where('batch_number', 'like', "{$prefix}-{$date}-%")
+                ->orderBy('batch_number', 'desc')
+                ->lockForUpdate()
+                ->value('batch_number');
 
-        $lastBatch = DB::table($table)
-            ->where($column, 'like', "{$prefix}-{$date}-%")
-            ->orderBy($column, 'desc')
-            ->value($column);
+            if ($lastBatch) {
+                $parts = explode('-', $lastBatch);
+                $lastNumber = (int) end($parts);
+                $newNumber = str_pad($lastNumber + 1, 3, '0', STR_PAD_LEFT);
+            } else {
+                $newNumber = '001';
+            }
 
-        if ($lastBatch) {
-            $parts = explode('-', $lastBatch);
-            $lastNumber = (int) end($parts);
-            $newNumber = str_pad($lastNumber + 1, 3, '0', STR_PAD_LEFT);
-        } else {
-            $newNumber = '001';
-        }
-
-        return "{$prefix}-{$date}-{$newNumber}";
+            return "{$prefix}-{$date}-{$newNumber}";
+        });
     }
 }

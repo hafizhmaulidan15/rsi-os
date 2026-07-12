@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Services\AuditService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
@@ -11,6 +12,8 @@ use Inertia\Response;
 
 class UserController extends Controller
 {
+    public function __construct(private AuditService $auditService) {}
+
     public function index(): Response
     {
         return Inertia::render('Users/Index', [
@@ -37,6 +40,8 @@ class UserController extends Controller
             'password' => Hash::make($validated['password']),
         ]);
 
+        $this->auditService->log('user_created', 'users', null, null, $validated);
+
         return redirect()->route('users.index')->with('success', 'User berhasil dibuat.');
     }
 
@@ -54,7 +59,10 @@ class UserController extends Controller
             'email' => 'required|email|unique:users,email,' . $user->id,
         ]);
 
+        $old = $user->toArray();
         $user->update($validated);
+
+        $this->auditService->log('user_updated', 'users', $user->id, $old, $validated);
 
         return redirect()->route('users.index')->with('success', 'User berhasil diupdate.');
     }
@@ -65,7 +73,10 @@ class UserController extends Controller
             return back()->with('error', 'Tidak bisa menghapus akun sendiri.');
         }
 
+        $old = $user->toArray();
         $user->delete();
+
+        $this->auditService->log('user_deleted', 'users', $user->id, $old, null);
 
         return redirect()->route('users.index')->with('success', 'User berhasil dihapus.');
     }

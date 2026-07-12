@@ -8,7 +8,6 @@ import { ArrowLeft } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { qcResultSchema, QcResultFormData } from '@/lib/schemas';
-import { useState } from 'react';
 import { toast } from 'sonner';
 
 interface Props {

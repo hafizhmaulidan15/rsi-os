@@ -50,7 +50,8 @@
                 <tr>
                     @if(!empty($columns))
                         @foreach($columns as $col)
-                            <td>{{ $item[$col] ?? '-' }}</td>
+                            @php $val = $item[$col] ?? '-'; @endphp
+                            <td class="{{ $val === 'LULUS' ? 'pass' : ($val === 'DITOLAK' ? 'reject' : '') }}">{{ $val }}</td>
                         @endforeach
                     @else
                         @foreach((array)$item->toArray() as $val)

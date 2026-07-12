@@ -5,7 +5,7 @@ import { Button } from '@/Components/ui/button';
 import { Input } from '@/Components/ui/input';
 import { Label } from '@/Components/ui/label';
 import { Badge } from '@/Components/ui/badge';
-import { ArrowLeft, FlaskConical } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -26,7 +26,7 @@ interface ProductionBatch {
         supplier?: { name: string };
         qc_results?: Array<{ id: number; qc_type: string; ph: number | null; aroma: string | null; taste: string | null; result: string }>;
     };
-    production_steps?: Array<{
+    productionSteps?: Array<{
         rennet_ml: number | null;
         nitric_acid_ml: number | null;
         target_temperature: number | null;
@@ -35,18 +35,19 @@ interface ProductionBatch {
         cooling_time_minutes: number | null;
         notes: string | null;
     }>;
-    yield_record?: {
+    yieldRecord?: {
         predicted_yield_kg: number;
         actual_yield_kg: number;
         variance_percent: number;
     };
-    shelf_life_record?: {
+    shelfLifeRecord?: {
         chiller_in_date: string;
         chiller_in_time: string;
+        shelf_life_days: number;
         expiry_date: string;
         remaining_days: number;
     };
-    qc_results?: Array<{
+    qcResults?: Array<{
         id: number;
         qc_type: string;
         ph: number | null;
@@ -65,7 +66,7 @@ interface Props {
 export default function ProductionShow({ productionBatch }: Props) {
     const batch = productionBatch;
     const isMozza = batch.production_type === 'mozzarella';
-    const steps = batch.production_steps ?? [];
+    const steps = batch.productionSteps ?? [];
     const firstStep = steps[0];
 
     const [stepForm, setStepForm] = useState({
@@ -81,16 +82,16 @@ export default function ProductionShow({ productionBatch }: Props) {
     const { register: registerYield, handleSubmit: handleSubmitYield, formState: { errors: yieldErrors } } = useForm<YieldFormData>({
         resolver: zodResolver(yieldSchema),
         defaultValues: {
-            actual_yield_kg: batch.yield_record?.actual_yield_kg?.toString() || '',
+            actual_yield_kg: batch.yieldRecord?.actual_yield_kg?.toString() || '',
         },
     });
 
     const { register: registerShelf, handleSubmit: handleSubmitShelf, formState: { errors: shelfErrors } } = useForm<ShelfLifeFormData>({
         resolver: zodResolver(shelfLifeSchema),
         defaultValues: {
-            chiller_in_date: batch.shelf_life_record?.chiller_in_date || '',
-            chiller_in_time: batch.shelf_life_record?.chiller_in_time || '',
-            shelf_life_days: batch.shelf_life_record?.shelf_life_days?.toString() || '14',
+            chiller_in_date: batch.shelfLifeRecord?.chiller_in_date || '',
+            chiller_in_time: batch.shelfLifeRecord?.chiller_in_time || '',
+            shelf_life_days: batch.shelfLifeRecord?.shelf_life_days?.toString() || '14',
         },
     });
 
@@ -154,9 +155,9 @@ export default function ProductionShow({ productionBatch }: Props) {
                             <CardTitle className="text-white">Batch Info</CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-2 text-sm">
-                            <div className="flex justify-between"><span className="text-gray-400">Milk Batch</span><span className="text-white">{batch.milk_batch?.batch_number}</span></div>
-                            <div className="flex justify-between"><span className="text-gray-400">Supplier</span><span className="text-white">{batch.milk_batch?.supplier?.name}</span></div>
-                            <div className="flex justify-between"><span className="text-gray-400">Volume</span><span className="text-white">{batch.milk_batch?.volume_liter} L</span></div>
+                            <div className="flex justify-between"><span className="text-gray-400">Milk Batch</span><span className="text-white">{batch.milkBatch?.batch_number}</span></div>
+                            <div className="flex justify-between"><span className="text-gray-400">Supplier</span><span className="text-white">{batch.milkBatch?.supplier?.name}</span></div>
+                            <div className="flex justify-between"><span className="text-gray-400">Volume</span><span className="text-white">{batch.milkBatch?.volume_liter} L</span></div>
                             <div className="flex justify-between"><span className="text-gray-400">Start Time</span><span className="text-white">{batch.start_time?.slice(0, 16).replace('T', ' ')}</span></div>
                             <div className="flex justify-between"><span className="text-gray-400">End Time</span><span className="text-white">{batch.end_time?.slice(0, 16).replace('T', ' ') || '-'}</span></div>
                             {batch.notes && <div className="flex justify-between"><span className="text-gray-400">Notes</span><span className="text-white">{batch.notes}</span></div>}
@@ -208,11 +209,11 @@ export default function ProductionShow({ productionBatch }: Props) {
                                 <CardTitle className="text-white">Yield Result</CardTitle>
                             </CardHeader>
                             <CardContent>
-                                {batch.yield_record ? (
+                                {batch.yieldRecord ? (
                                     <div className="space-y-3 mb-4">
-                                        <div className="flex justify-between text-sm"><span className="text-gray-400">Predicted Yield</span><span className="text-white">{batch.yield_record.predicted_yield_kg} kg</span></div>
-                                        <div className="flex justify-between text-sm"><span className="text-gray-400">Actual Yield</span><span className="text-white font-semibold">{batch.yield_record.actual_yield_kg} kg</span></div>
-                                        <div className="flex justify-between text-sm"><span className="text-gray-400">Variance</span><span className={parseFloat(batch.yield_record.variance_percent) < 0 ? 'text-[#DC2626]' : 'text-[#16A34A]'}>{batch.yield_record.variance_percent}%</span></div>
+                                        <div className="flex justify-between text-sm"><span className="text-gray-400">Predicted Yield</span><span className="text-white">{batch.yieldRecord.predicted_yield_kg} kg</span></div>
+                                        <div className="flex justify-between text-sm"><span className="text-gray-400">Actual Yield</span><span className="text-white font-semibold">{batch.yieldRecord.actual_yield_kg} kg</span></div>
+                                        <div className="flex justify-between text-sm"><span className="text-gray-400">Variance</span><span className={batch.yieldRecord.variance_percent < 0 ? 'text-[#DC2626]' : 'text-[#16A34A]'}>{batch.yieldRecord.variance_percent}%</span></div>
                                     </div>
                                 ) : (
                                     <p className="text-sm text-gray-500 mb-4">Belum ada data yield</p>
@@ -234,11 +235,11 @@ export default function ProductionShow({ productionBatch }: Props) {
                                 <CardTitle className="text-white">Shelf Life</CardTitle>
                             </CardHeader>
                             <CardContent>
-                                {batch.shelf_life_record ? (
+                                {batch.shelfLifeRecord ? (
                                     <div className="space-y-2 mb-4 text-sm">
-                                        <div className="flex justify-between"><span className="text-gray-400">Chiller In</span><span className="text-white">{batch.shelf_life_record.chiller_in_date} {batch.shelf_life_record.chiller_in_time}</span></div>
-                                        <div className="flex justify-between"><span className="text-gray-400">Expiry Date</span><span className="text-white">{batch.shelf_life_record.expiry_date}</span></div>
-                                        <div className="flex justify-between"><span className="text-gray-400">Remaining</span><span className={batch.shelf_life_record.remaining_days <= 3 ? 'text-[#D97706]' : 'text-[#16A34A]'}>{batch.shelf_life_record.remaining_days} days</span></div>
+                                        <div className="flex justify-between"><span className="text-gray-400">Chiller In</span><span className="text-white">{batch.shelfLifeRecord.chiller_in_date} {batch.shelfLifeRecord.chiller_in_time}</span></div>
+                                        <div className="flex justify-between"><span className="text-gray-400">Expiry Date</span><span className="text-white">{batch.shelfLifeRecord.expiry_date}</span></div>
+                                        <div className="flex justify-between"><span className="text-gray-400">Remaining</span><span className={batch.shelfLifeRecord.remaining_days <= 3 ? 'text-[#D97706]' : 'text-[#16A34A]'}>{batch.shelfLifeRecord.remaining_days} days</span></div>
                                     </div>
                                 ) : (
                                     <p className="text-sm text-gray-500 mb-4">Belum ada data shelf life</p>
@@ -330,7 +331,7 @@ export default function ProductionShow({ productionBatch }: Props) {
                         <CardTitle className="text-white">Riwayat QC</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        {batch.qc_results?.length > 0 ? batch.qc_results.map((qc) => (
+                        {(batch.qcResults?.length ?? 0) > 0 ? batch.qcResults?.map((qc) => (
                             <div key={qc.id} className="flex items-center justify-between border-b border-[#1F2937] py-2 last:border-0">
                                 <div>
                                     <p className="text-sm text-white capitalize">{qc.qc_type === 'pasteurized' ? 'Produk' : qc.qc_type} QC</p>

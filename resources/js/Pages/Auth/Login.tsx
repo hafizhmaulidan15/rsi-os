@@ -107,9 +107,9 @@ export default function Login({
                                 type="checkbox"
                                 name="remember"
                                 checked={data.remember}
-                                onChange={(e) =>
-                                    setData('remember', (e.target.checked || false) as false)
-                                }
+                                    onChange={(e) =>
+                                        setData('remember', e.target.checked)
+                                    }
                                 className="h-4 w-4 rounded border-[#1F2937] bg-[#111827] text-[#2563EB] focus:ring-[#2563EB]"
                             />
                             <span className="text-sm text-gray-400 md:text-base">Ingat saya</span>

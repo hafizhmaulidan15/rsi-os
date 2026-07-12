@@ -9,8 +9,8 @@ class StoreQcResultRequest extends FormRequest
     public function authorize(): bool { return true; }
     public function rules(): array {
         return [
-            'milk_batch_id' => 'required_without:production_batch_id|exists:milk_batches,id|nullable',
-            'production_batch_id' => 'required_without:milk_batch_id|exists:production_batches,id|nullable',
+            'milk_batch_id' => 'required_without:production_batch_id|exists:milk_batches,id',
+            'production_batch_id' => 'required_without:milk_batch_id|exists:production_batches,id',
             'qc_type' => 'required|in:raw,pasteurized,mozzarella',
             'fat' => 'nullable|numeric|min:0|max:100',
             'snf' => 'nullable|numeric|min:0|max:100',
@@ -28,7 +28,6 @@ class StoreQcResultRequest extends FormRequest
             'aroma' => 'nullable|string',
             'taste' => 'nullable|string',
             'texture' => 'nullable|string',
-            'notes' => 'nullable|string',
         ];
     }
 }

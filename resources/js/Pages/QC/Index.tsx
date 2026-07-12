@@ -8,8 +8,8 @@ import { Plus, FileDown } from 'lucide-react';
 
 interface QcResult {
     id: number;
-    milk_batch: { batch_number: string; supplier: { name: string } } | null;
-    production_batch: { batch_number: string; production_type: string } | null;
+    milkBatch: { batch_number: string; supplier: { name: string } } | null;
+    productionBatch: { batch_number: string; production_type: string } | null;
     qc_type: string;
     total_solids: number | null;
     fat: number | null;
@@ -32,8 +32,8 @@ export default function QcIndex({ qcResults }: Props) {
             accessorKey: 'milk_batch.batch_number',
             header: 'Batch',
             cell: ({ row }) => {
-                const mb = row.original.milk_batch?.batch_number;
-                const pb = row.original.production_batch?.batch_number;
+                const mb = row.original.milkBatch?.batch_number;
+                const pb = row.original.productionBatch?.batch_number;
                 return <span className="font-mono text-[#2563EB]">{mb || pb || '-'}</span>;
             },
         },

@@ -29,6 +29,6 @@ class AnalyticsController extends Controller
     
     public function shelfLife() {
         return ShelfLifeRecord::with('productionBatch')
-            ->orderBy('expiry_date', 'asc')->get();
+            ->orderBy('expiry_date', 'asc')->take(50)->get();
     }
 }

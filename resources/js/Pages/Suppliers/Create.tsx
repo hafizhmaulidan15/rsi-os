@@ -4,22 +4,19 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/Components/ui/card';
 import { Button } from '@/Components/ui/button';
 import { Input } from '@/Components/ui/input';
 import { Label } from '@/Components/ui/label';
-import { useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { supplierSchema, SupplierFormData } from '@/lib/schemas';
 
 export default function SupplierCreate() {
-    const [supplierCode, setSupplierCode] = useState('');
-
     const { register, handleSubmit, formState: { errors } } = useForm<SupplierFormData>({
         resolver: zodResolver(supplierSchema),
-        defaultValues: { name: '', phone: '', address: '', notes: '' },
+        defaultValues: { supplier_code: '', name: '', phone: '', address: '', notes: '' },
     });
 
     const onSubmit = (data: SupplierFormData) => {
-        router.post('/suppliers', { ...data, supplier_code: supplierCode });
+        router.post('/suppliers', data);
     };
 
     return (
@@ -43,10 +40,9 @@ export default function SupplierCreate() {
                                 <Input
                                     className="border-[#1F2937] bg-[#0F172A] text-white"
                                     placeholder="SUP-001"
-                                    value={supplierCode}
-                                    onChange={(e) => setSupplierCode(e.target.value)}
-                                    required
+                                    {...register('supplier_code')}
                                 />
+                                {errors.supplier_code && <p className="text-xs text-red-400">{errors.supplier_code.message}</p>}
                             </div>
                             <div className="space-y-2">
                                 <Label className="text-gray-400">Nama Supplier</Label>

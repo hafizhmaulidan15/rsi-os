@@ -5,11 +5,11 @@ import { Badge } from '@/Components/ui/badge';
 
 interface ShelfLifeRecord {
     id: number;
-    production_batch: {
+    productionBatch: {
         id: number;
         batch_number: string;
         start_time: string;
-        milk_batch: {
+        milkBatch: {
             id: number;
             batch_number: string;
             supplier: { name: string } | null;
@@ -67,13 +67,13 @@ export default function ShelfLifeIndex({ records }: Props) {
                                         {records.data.map((record) => (
                                             <tr key={record.id} className="border-b border-[#1F2937] last:border-0">
                                                 <td className="py-3 pr-4 text-white">
-                                                    {record.production_batch?.batch_number ?? '—'}
+                                                    {record.productionBatch?.batch_number ?? '—'}
                                                 </td>
                                                 <td className="py-3 pr-4 text-gray-400">
-                                                    {record.production_batch?.milk_batch?.supplier?.name ?? '—'}
+                                                    {record.productionBatch?.milkBatch?.supplier?.name ?? '—'}
                                                 </td>
                                                 <td className="py-3 pr-4 text-gray-300">
-                                                    {record.production_batch?.start_time?.slice(0, 10) ?? '—'}
+                                                    {record.productionBatch?.start_time?.slice(0, 10) ?? '—'}
                                                 </td>
                                                 <td className="py-3 pr-4 text-gray-300">
                                                     {record.chiller_in_date ?? '—'}
@@ -91,9 +91,9 @@ export default function ShelfLifeIndex({ records }: Props) {
                                                     )}
                                                 </td>
                                                 <td className="py-3">
-                                                    {record.production_batch && (
+                                                    {record.productionBatch && (
                                                         <Link
-                                                            href={`/production/${record.production_batch.id}`}
+                                                            href={`/production/${record.productionBatch.id}`}
                                                             className="text-sm text-[#60A5FA] hover:text-[#3B82F6]"
                                                         >
                                                             Detail

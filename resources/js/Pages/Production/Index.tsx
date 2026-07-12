@@ -50,7 +50,7 @@ export default function ProductionIndex({ productionBatches, filter = 'all' }: P
     const columns: ColumnDef<ProductionBatch>[] = [
         { accessorKey: 'batch_number', header: 'Batch', cell: ({ row }) => <span className="font-mono text-[#2563EB]">{row.getValue('batch_number')}</span> },
         { accessorKey: 'production_type', header: 'Type', cell: ({ row }) => <span className="capitalize">{row.getValue('production_type')}</span> },
-        { accessorKey: 'milk_batch.supplier.name', header: 'Supplier', cell: ({ row }) => <span className="text-gray-400">{row.original.milk_batch?.supplier?.name || '-'}</span> },
+        { accessorKey: 'milkBatch.supplier.name', header: 'Supplier', cell: ({ row }) => <span className="text-gray-400">{row.original.milkBatch?.supplier?.name || '-'}</span> },
         {
             accessorKey: 'start_time',
             header: 'Start',

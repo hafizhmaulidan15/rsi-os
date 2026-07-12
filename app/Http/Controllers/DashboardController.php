@@ -29,7 +29,7 @@ class DashboardController extends Controller
             ->get();
 
         $shelfLifeAlerts = ShelfLifeRecord::with('productionBatch')
-            ->whereColumn('expiry_date', '>=', now())
+            ->where('expiry_date', '>=', now())
             ->where('expiry_date', '<=', now()->addDays(3))
             ->get();
 

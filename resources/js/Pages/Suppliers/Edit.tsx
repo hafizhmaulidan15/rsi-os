@@ -17,6 +17,7 @@ export default function SupplierEdit({ supplier }: Props) {
     const { register, handleSubmit, formState: { errors } } = useForm<SupplierFormData>({
         resolver: zodResolver(supplierSchema),
         defaultValues: {
+            supplier_code: supplier.supplier_code,
             name: supplier.name,
             phone: supplier.phone || '',
             address: supplier.address || '',
